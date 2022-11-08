@@ -1,0 +1,8 @@
+{
+  "repeater_click": {
+    "subtitle": "subtitles.repeatersound.repeater_click",
+    "sounds": [
+      "repeatersound:repeater_click"
+    ]
+  }
+}
