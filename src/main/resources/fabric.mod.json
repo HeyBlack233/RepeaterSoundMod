@@ -10,9 +10,9 @@
   "contact": {},
   "license": "MIT",
   "icon": "assets/repeatersound/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "Main": [
+    "Client": [
       "heyblack.repeatersound.RepeaterClickSound"
     ]
   },

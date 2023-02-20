@@ -4,5 +4,11 @@
     "sounds": [
       "repeatersound:repeater_click"
     ]
+  },
+  "redstone_wire_click": {
+    "subtitle": "subtitles.repeatersound.redstone_wire_click",
+    "sounds": [
+      "repeatersound:redstone_wire_click"
+    ]
   }
 }
