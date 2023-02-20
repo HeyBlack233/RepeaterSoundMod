@@ -1,6 +1,6 @@
 package heyblack.repeatersound.mixin;
 
-import heyblack.repeatersound.RepeaterClickSound;
+import heyblack.RepeaterClickSound;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
