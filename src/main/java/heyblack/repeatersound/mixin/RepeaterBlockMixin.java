@@ -1,6 +1,7 @@
 package heyblack.repeatersound.mixin;
 
-import heyblack.repeatersound.RepeaterClickSound;
+import heyblack.repeatersound.RepeaterSound;
+import heyblack.repeatersound.config.ConfigManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -23,13 +24,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RepeaterBlock.class)
 public class RepeaterBlockMixin
 {
-    @Shadow @Final public static IntProperty DELAY;
+    ConfigManager cfgManager = ConfigManager.getInstance();
 
+    @Shadow @Final public static IntProperty DELAY;
     @Inject(at = @At("TAIL"), method = "onUse")
     @Environment(value= EnvType.CLIENT)
     private void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        float pitch = (0.48f + state.cycle(DELAY).get(DELAY) * 0.02f);
-        world.playSound(player, pos, RepeaterClickSound.BLOCK_REPEATER_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
+        if (!cfgManager.getConfigFromFile().getRandomPitch())
+        {
+            float basePitch = cfgManager.getConfigFromFile().getBasePitch();
+            float pitch = ((basePitch - 0.02f) + state.cycle(DELAY).get(DELAY) * 0.02f);
+            world.playSound(player, pos, RepeaterSound.BLOCK_REPEATER_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
+            return;
+        }
+        float basePitch = cfgManager.getConfigFromFile().getBasePitch();
+        float newPitch = (float) (basePitch + (Math.random() - 0.5) * 0.25);
+        world.playSound(player, pos, RepeaterSound.BLOCK_REPEATER_CLICK, SoundCategory.BLOCKS, 0.3f, newPitch);
     }
 }

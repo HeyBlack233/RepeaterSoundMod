@@ -2,18 +2,20 @@
   "schemaVersion": 1,
   "id": "repeatersound",
   "version": "${version}",
-  "name": "RepeaterClickingSound",
+  "name": "RepeaterSound",
   "description": "adding a sound to repeater when it got clicked",
   "authors": [
     "HeyBlack"
   ],
-  "contact": {},
+  "contact": {
+    "sources": "https://github.com/HeyBlack233/RepeaterClickingSoundMod"
+  },
   "license": "MIT",
   "icon": "assets/repeatersound/icon.png",
   "environment": "client",
   "entrypoints": {
-    "Client": [
-      "heyblack.repeatersound.RepeaterClickSound"
+    "client": [
+      "heyblack.repeatersound.RepeaterSound"
     ]
   },
   "mixins": [
