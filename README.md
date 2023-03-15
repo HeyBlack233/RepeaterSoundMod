@@ -19,7 +19,6 @@ Redstone wire will play a sound when it got clicked and the shape is changed bet
 ## Configuration
 
 The pitch of repeater and redstone wire sound can be changed by using a command added by this mod, or you can edit the config file manually.
-
 There's another option to apply a random offset to the base pitch.
 
 ### Command
@@ -27,3 +26,7 @@ There's another option to apply a random offset to the base pitch.
 Command `/repeatersound` allows you to edit those options in-game, there are two arguments you can use in this command:
 - `/repeatersound setBasePitch <pitch>` is used for the adjustment of the base pitch that will be applied on both repeater and redstone wire, `<pitch>` requires a `float` number
 - `/repeatersound useRandomPitch <random>` is used to set if the random offset will be applied to the base pitch, `<random>` requires a `boolean` value
+
+### Config File
+
+After the first initialize of the mod, a config file `repeatersound.json5` will be created in the game's `config` directory. You can edit this file manually if you want.
