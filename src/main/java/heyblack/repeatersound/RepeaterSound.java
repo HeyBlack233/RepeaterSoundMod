@@ -5,15 +5,11 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import heyblack.repeatersound.config.Config;
 import heyblack.repeatersound.config.ConfigManager;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.minecraft.server.command.ServerCommandSource;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
 public class RepeaterSound implements ClientModInitializer
 {
@@ -32,17 +28,16 @@ public class RepeaterSound implements ClientModInitializer
     {
         cfgManager.loadConfig();
 
-        CommandRegistrationCallback.EVENT.register(
-                (dispatcher, dedicated) -> dispatcher.register(literal("repeatersound")
-                        .then(literal("setBasePitch")
-                                .then(argument("pitch", FloatArgumentType.floatArg())
-                                        .executes(ctx -> saveConfigPitch(ctx.getSource(), FloatArgumentType.getFloat(ctx, "pitch")))))
-                        .then(literal("useRandomPitch")
-                                .then(argument("useRandom", BoolArgumentType.bool())
-                                        .executes(ctx -> saveConfigRandom(ctx.getSource(), BoolArgumentType.getBool(ctx, "useRandom")))))));
+        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("repeatersound")
+                        .then(ClientCommandManager.literal("setBasePitch")
+                                .then(ClientCommandManager.argument("pitch", FloatArgumentType.floatArg())
+                                        .executes(ctx -> saveConfigPitch(FloatArgumentType.getFloat(ctx, "pitch")))))
+                        .then(ClientCommandManager.literal("useRandomPitch")
+                                .then(ClientCommandManager.argument("useRandom", BoolArgumentType.bool())
+                                        .executes(ctx -> saveConfigRandom(BoolArgumentType.getBool(ctx, "useRandom"))))));
     }
 
-    public int saveConfigPitch(ServerCommandSource source, float pitch)
+    public int saveConfigPitch(float pitch)
     {
         Config cfg = cfgManager.getConfigFromFile();
         cfg.setBasePitch(pitch);
@@ -52,7 +47,7 @@ public class RepeaterSound implements ClientModInitializer
         return 1;
     }
 
-    public int saveConfigRandom(ServerCommandSource source, boolean random)
+    public int saveConfigRandom(boolean random)
     {
         Config cfg = cfgManager.getConfigFromFile();
         cfg.setRandomPitch(random);
