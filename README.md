@@ -6,6 +6,8 @@ RepeaterSound is a simple client side mod, the mod added sound events when some 
 
 Currently supports repeater and redstone wire.
 
+Requires [Prism Config](https://modrinth.com/mod/prism-config) for all versions
+
 Requires [Fabric API](https://modrinth.com/mod/fabric-api) for 1.19.3 and above
 
 ### Repeater
