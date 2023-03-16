@@ -33,15 +33,13 @@ public class RedstoneWireBlockMixin
     @Environment(value= EnvType.CLIENT)
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        if (!cfgManager.getConfigFromFile().getRandomPitch())
-        {
-            float basePitch = cfgManager.getConfigFromFile().getBasePitch();
-            float pitch = this.isFullyConnected(state) ? basePitch : basePitch + 0.05f;
-            world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
-            return;
-        }
         float basePitch = cfgManager.getConfigFromFile().getBasePitch();
-        float newPitch = (float) (basePitch + (Math.random() - 0.5) * 0.25);
-        world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, 0.3f, newPitch);
+        float pitch;
+        if (cfgManager.getConfigFromFile().getRandomPitch())
+            pitch = (float) (basePitch + (Math.random() - 0.5) * 0.25);
+        else
+            pitch = this.isFullyConnected(state) ? basePitch : basePitch + 0.05f;
+
+        world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
     }
 }

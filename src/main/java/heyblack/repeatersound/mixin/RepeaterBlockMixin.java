@@ -29,17 +29,15 @@ public class RepeaterBlockMixin
     @Shadow @Final public static IntProperty DELAY;
     @Inject(at = @At("TAIL"), method = "onUse")
     @Environment(value= EnvType.CLIENT)
-    private void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        if (!cfgManager.getConfigFromFile().getRandomPitch())
-        {
-            float basePitch = cfgManager.getConfigFromFile().getBasePitch();
-            float pitch = ((basePitch - 0.02f) + state.cycle(DELAY).get(DELAY) * 0.02f);
-            world.playSound(player, pos, RepeaterSound.BLOCK_REPEATER_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
-            return;
-        }
         float basePitch = cfgManager.getConfigFromFile().getBasePitch();
-        float newPitch = (float) (basePitch + (Math.random() - 0.5) * 0.25);
-        world.playSound(player, pos, RepeaterSound.BLOCK_REPEATER_CLICK, SoundCategory.BLOCKS, 0.3f, newPitch);
+        float pitch;
+        if (cfgManager.getConfigFromFile().getRandomPitch())
+            pitch = (float) (basePitch + (Math.random() - 0.5) * 0.25);
+        else
+            pitch = ((basePitch - 0.02f) + state.cycle(DELAY).get(DELAY) * 0.02f);
+
+        world.playSound(player, pos, RepeaterSound.BLOCK_REPEATER_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
     }
 }
