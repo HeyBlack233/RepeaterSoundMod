@@ -1,5 +1,8 @@
 # Repeater Sound Mod
 
+[![Modrinth Downloads](https://img.shields.io/modrinth/dt/vt4lfXNC?color=%2300AF5C&logo=modrinth&style=flat-square)](https://modrinth.com/mod/repeater-sound)
+[![GitHub all releases](https://img.shields.io/github/downloads/HeyBlack233/RepeaterSoundMod/total?color=191970&logo=github&logoColor=181717&style=flat-square)](https://github.com/HeyBlack233/RepeaterSoundMod/releases)
+
 ## Description
 
 RepeaterSound is a simple client side mod, the mod added sound events when some blocks are clicked.
