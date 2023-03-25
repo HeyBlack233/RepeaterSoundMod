@@ -1,6 +1,7 @@
 package heyblack.repeatersound.mixin;
 
 import heyblack.repeatersound.RepeaterSound;
+import heyblack.repeatersound.config.Config;
 import heyblack.repeatersound.config.ConfigManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -22,8 +23,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneWireBlockMixin
 {
-    ConfigManager cfgManager = ConfigManager.getInstance();
-
     @Shadow
     protected static boolean isFullyConnected(BlockState state)
     {
@@ -33,13 +32,11 @@ public class RedstoneWireBlockMixin
     @Environment(value= EnvType.CLIENT)
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        float basePitch = cfgManager.getConfigFromFile().getBasePitch();
-        float pitch;
-        if (cfgManager.getConfigFromFile().getRandomPitch())
-            pitch = (float) (basePitch + (Math.random() - 0.5) * 0.25);
-        else
-            pitch = this.isFullyConnected(state) ? basePitch : basePitch + 0.05f;
-
+        Config config = ConfigManager.getInstance().getConfigFromFile();
+        float basePitch = config.getBasePitch();
+        float pitch = (config.getRandomPitch()) ?
+                (float) (basePitch + (Math.random() - 0.5) * 0.25) :
+                this.isFullyConnected(state) ? basePitch : basePitch + 0.05f;
         world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
     }
 }

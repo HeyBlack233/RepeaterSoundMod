@@ -1,6 +1,7 @@
 package heyblack.repeatersound.mixin;
 
 import heyblack.repeatersound.RepeaterSound;
+import heyblack.repeatersound.config.Config;
 import heyblack.repeatersound.config.ConfigManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,20 +25,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RepeaterBlock.class)
 public class RepeaterBlockMixin
 {
-    ConfigManager cfgManager = ConfigManager.getInstance();
-
     @Shadow @Final public static IntProperty DELAY;
     @Inject(at = @At("TAIL"), method = "onUse")
     @Environment(value= EnvType.CLIENT)
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        float basePitch = cfgManager.getConfigFromFile().getBasePitch();
-        float pitch;
-        if (cfgManager.getConfigFromFile().getRandomPitch())
-            pitch = (float) (basePitch + (Math.random() - 0.5) * 0.25);
-        else
-            pitch = ((basePitch - 0.02f) + state.cycle(DELAY).get(DELAY) * 0.02f);
-
+        Config config = ConfigManager.getInstance().getConfigFromFile();
+        float basePitch = config.getBasePitch();
+        float pitch = (config.getRandomPitch()) ?
+                (float) (basePitch + (Math.random() - 0.5) * 0.25) :
+                ((basePitch - 0.02f) + state.cycle(DELAY).get(DELAY) * 0.02f);
         world.playSound(player, pos, RepeaterSound.BLOCK_REPEATER_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
     }
 }
