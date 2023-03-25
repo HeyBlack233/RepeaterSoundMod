@@ -2,13 +2,13 @@
   "repeater_click": {
     "subtitle": "subtitles.repeatersound.repeater_click",
     "sounds": [
-      "repeatersound:repeater_click"
+      "random/click"
     ]
   },
   "redstone_wire_click": {
     "subtitle": "subtitles.repeatersound.redstone_wire_click",
     "sounds": [
-      "repeatersound:redstone_wire_click"
+      "random/click"
     ]
   }
 }
