@@ -5,12 +5,10 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "RedstoneWireBlockMixin",
-    "RepeaterBlockMixin"
+    "RepeaterBlockMixin",
+    "ComparatorBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "ComparatorBlockMixin"
-  ]
+  }
 }

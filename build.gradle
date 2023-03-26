@@ -17,10 +17,6 @@ repositories {
         name = "Nova Committee - Release"
         url = "https://maven.nova-committee.cn/releases/"
     }
-    maven {
-        name = "Nova Committee - Snapshot"
-        url = "https://maven.nova-committee.cn/snapshots/"
-    }
 }
 
 dependencies {
@@ -31,8 +27,6 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    implementation "io.github.prismwork:prismconfig:0.2.0:all"
 }
 
 processResources {

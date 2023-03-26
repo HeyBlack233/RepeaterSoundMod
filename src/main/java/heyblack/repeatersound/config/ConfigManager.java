@@ -2,17 +2,15 @@ package heyblack.repeatersound.config;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import io.github.prismwork.prismconfig.api.PrismConfig;
-import io.github.prismwork.prismconfig.api.config.DefaultDeserializers;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class ConfigManager
 {
+    Logger logger = LogManager.getLogger();
     Config cfg = new Config();
     static Gson gson = new Gson();
     public File cfgFile = FabricLoader.getInstance().getConfigDir().resolve("repeatersound.json5").toFile();
@@ -31,21 +29,34 @@ public class ConfigManager
             {
                 cfgFile.createNewFile();
                 cfg.setDefault();
-                PrismConfig.getInstance().deserializeAndWrite(Config.class, cfg, DefaultDeserializers.getInstance().json5(Config.class), cfgFile);
+                save(cfg);
+
                 return;
             }
             catch (IOException e)
             {
-                e.printStackTrace();
+                logger.error("[RepeaterSound] " + "error while creating config!");
+                throw new RuntimeException(e);
             }
         }
-
         cfg = getConfigFromFile();
     }
 
     public void save(Config cfg)
     {
-        PrismConfig.getInstance().deserializeAndWrite(Config.class, cfg, DefaultDeserializers.getInstance().json5(Config.class), cfgFile);
+        logger.info("[RepeaterSound] " + "saving config to file: [basePitch:{}, useRandom:{}]", cfg.getBasePitch(), cfg.getRandomPitch());
+        String str = gson.toJson(cfg);
+        try
+        {
+            FileWriter writer = new FileWriter(cfgFile.getAbsolutePath());
+            writer.write(str);
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            logger.error("[RepeaterSound] " + "error while saving config!");
+            throw new RuntimeException(e);
+        }
     }
 
     public Config getConfigFromFile()

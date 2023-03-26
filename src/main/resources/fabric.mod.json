@@ -23,8 +23,6 @@
   ],
   "depends": {
     "fabricloader": ">=0.14.9",
-    "fabric": "*",
-    "prismconfig": ">=0.2.0",
     "minecraft": ">=1.16"
   }
 }

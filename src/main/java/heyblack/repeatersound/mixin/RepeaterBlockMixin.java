@@ -22,12 +22,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@Environment(value= EnvType.CLIENT)
 @Mixin(RepeaterBlock.class)
 public class RepeaterBlockMixin
 {
     @Shadow @Final public static IntProperty DELAY;
     @Inject(at = @At("TAIL"), method = "onUse")
-    @Environment(value= EnvType.CLIENT)
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
         Config config = ConfigManager.getInstance().getConfigFromFile();
