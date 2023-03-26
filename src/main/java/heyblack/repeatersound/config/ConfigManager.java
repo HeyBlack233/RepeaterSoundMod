@@ -68,6 +68,7 @@ public class ConfigManager
         }
         catch (FileNotFoundException e)
         {
+            logger.error("[RepeaterSound] " + "error while reading config!");
             throw new RuntimeException(e);
         }
     }
