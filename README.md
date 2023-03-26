@@ -2,7 +2,7 @@
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/vt4lfXNC?color=%2300AF5C&logo=modrinth&style=flat-square)](https://modrinth.com/mod/repeater-sound)
 [![GitHub all releases](https://img.shields.io/github/downloads/HeyBlack233/RepeaterSoundMod/total?color=191970&logo=github&logoColor=181717&style=flat-square)](https://github.com/HeyBlack233/RepeaterSoundMod/releases)
-![Mod Version](https://img.shields.io/badge/Version-1.1.0-orange?style=flat-square)
+![Mod Version](https://img.shields.io/badge/Version-1.1.1-orange?style=flat-square)
 ![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.19-blue?style=flat-square)
 
 ## Description
@@ -10,8 +10,6 @@
 RepeaterSound is a simple client side mod, the mod added sound events when some blocks are clicked.
 
 Currently supports repeater and redstone wire. The pitch of comparator sound can also be adjusted by the mod.
-
-Requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Prism Config](https://modrinth.com/mod/prism-config)
 
 ### Repeater
 
