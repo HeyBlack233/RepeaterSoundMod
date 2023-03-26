@@ -37,9 +37,8 @@ public class ComparatorBlockMixin
     {
         Config config = ConfigManager.getInstance().getConfigFromFile();
         float basePitch = config.getBasePitch();
-        float pitch = (config.getRandomPitch()) ?
+        return config.getRandomPitch() ?
                 (float) (basePitch + (Math.random() - 0.5) * 0.25) :
                 (state = state.cycle(MODE)).get(MODE) == ComparatorMode.SUBTRACT ? basePitch + 0.05f : basePitch;
-        return pitch;
     }
 }

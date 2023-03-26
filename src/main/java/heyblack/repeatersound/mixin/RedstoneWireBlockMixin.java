@@ -34,7 +34,7 @@ public class RedstoneWireBlockMixin
     {
         Config config = ConfigManager.getInstance().getConfigFromFile();
         float basePitch = config.getBasePitch();
-        float pitch = (config.getRandomPitch()) ?
+        float pitch = config.getRandomPitch() ?
                 (float) (basePitch + (Math.random() - 0.5) * 0.25) :
                 this.isFullyConnected(state) ? basePitch : basePitch + 0.05f;
         world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);

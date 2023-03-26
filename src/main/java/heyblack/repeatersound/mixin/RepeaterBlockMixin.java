@@ -32,9 +32,9 @@ public class RepeaterBlockMixin
     {
         Config config = ConfigManager.getInstance().getConfigFromFile();
         float basePitch = config.getBasePitch();
-        float pitch = (config.getRandomPitch()) ?
+        float pitch = config.getRandomPitch() ?
                 (float) (basePitch + (Math.random() - 0.5) * 0.25) :
-                ((basePitch - 0.02f) + state.cycle(DELAY).get(DELAY) * 0.02f);
+                (basePitch - 0.02f) + state.cycle(DELAY).get(DELAY) * 0.02f;
         world.playSound(player, pos, RepeaterSound.BLOCK_REPEATER_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
     }
 }
