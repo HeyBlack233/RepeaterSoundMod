@@ -28,7 +28,7 @@ There's another option to apply a random offset to the base pitch.
 
 Command `/repeatersound` allows you to edit those options in-game, there are three arguments you can use in this command:
 
-- `/repeatersound setBasePitch <pitch>` is used for the adjustment of the base pitch that will be applied on both repeater and redstone wire, `<pitch>` requires a `float` number
+- `/repeatersound setBasePitch <pitch>` is used for the adjustment of the base pitch that will be applied, `<pitch>` requires a `float` number
 - `/repeatersound useRandomPitch <random>` is used to set if the random offset will be applied to the base pitch, `<random>` requires a `boolean` value
 - `/repeatersound setVolume <volume>` is used to set the volume of sounds, `volume` requires a `float` number
 
