@@ -2,14 +2,14 @@
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/vt4lfXNC?color=%2300AF5C&logo=modrinth&style=flat-square)](https://modrinth.com/mod/repeater-sound)
 [![GitHub all releases](https://img.shields.io/github/downloads/HeyBlack233/RepeaterSoundMod/total?color=191970&logo=github&logoColor=181717&style=flat-square)](https://github.com/HeyBlack233/RepeaterSoundMod/releases)
-![Mod Version](https://img.shields.io/badge/Version-1.1.1-orange?style=flat-square)
+![Mod Version](https://img.shields.io/badge/Version-1.2.0-orange?style=flat-square)
 ![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.19-blue?style=flat-square)
 
 ## Description
 
 RepeaterSound is a simple client side mod, the mod added sound events when some blocks are clicked.
 
-Currently supports repeater and redstone wire. The pitch of comparator sound can also be adjusted by the mod.
+Currently supports repeater, redstone wire, daylight detector. The pitch of comparator sound can also be adjusted by the mod.
 
 ### Repeater
 
@@ -21,7 +21,7 @@ Redstone wire will play a sound when it got clicked and the shape is changed bet
 
 ## Configuration
 
-The pitch of *repeater*, *comparator*, *redstone wire* sound can be changed by using a command added by this mod, or you can edit the config file manually.
+The pitch of sounds can be changed by using a command added by this mod, or you can edit the config file manually.
 There's another option to apply a random offset to the base pitch.
 
 ### Command
@@ -30,6 +30,7 @@ Command `/repeatersound` allows you to edit those options in-game, there are two
 
 - `/repeatersound setBasePitch <pitch>` is used for the adjustment of the base pitch that will be applied on both repeater and redstone wire, `<pitch>` requires a `float` number
 - `/repeatersound useRandomPitch <random>` is used to set if the random offset will be applied to the base pitch, `<random>` requires a `boolean` value
+- `/repeatersound setVolume <volume>` is used to set the volume of sounds, `volume` requires a `float` number
 
 ### Config File
 
