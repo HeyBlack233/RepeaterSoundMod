@@ -1,6 +1,7 @@
 package heyblack.repeatersound.config;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +12,7 @@ import java.io.*;
 public class ConfigManager
 {
     Logger logger = LogManager.getLogger();
-    Config cfg = new Config();
+    Config config = new Config();
     static Gson gson = new Gson();
     public File cfgFile = FabricLoader.getInstance().getConfigDir().resolve("repeatersound.json5").toFile();
 
@@ -21,17 +22,17 @@ public class ConfigManager
         return instance;
     }
 
-    public void loadConfig()
+    public Config loadConfig()
     {
         if(!cfgFile.exists())
         {
             try
             {
                 cfgFile.createNewFile();
-                cfg.setDefault();
-                save(cfg);
+                config.setDefault();
+                save(config);
 
-                return;
+                return config;
             }
             catch (IOException e)
             {
@@ -39,7 +40,8 @@ public class ConfigManager
                 throw new RuntimeException(e);
             }
         }
-        cfg = getConfigFromFile();
+        config = getConfigFromFile();
+        return config;
     }
 
     public void save(Config cfg)

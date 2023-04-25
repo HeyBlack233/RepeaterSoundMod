@@ -10,5 +10,11 @@
     "sounds": [
       "random/click"
     ]
+  },
+  "daylight_detector_click": {
+    "subtitle": "subtitles.repeatersound.daylight_detector_click",
+    "sounds": [
+      "random/click"
+    ]
   }
 }

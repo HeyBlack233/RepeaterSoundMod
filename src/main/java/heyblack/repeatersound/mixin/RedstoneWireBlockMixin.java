@@ -29,14 +29,15 @@ public class RedstoneWireBlockMixin
     {
         return false;
     }
-    @Inject(at = @At(value = "RETURN", ordinal = 1), method = "onUse")
+    @Inject( method = "onUse", at = @At(value = "RETURN", ordinal = 1))
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        Config config = ConfigManager.getInstance().getConfigFromFile();
+        Config config = RepeaterSound.getConfig();
         float basePitch = config.getBasePitch();
         float pitch = config.getRandomPitch() ?
                 (float) (basePitch + (Math.random() - 0.5) * 0.25) :
                 this.isFullyConnected(state) ? basePitch : basePitch + 0.05f;
-        world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
+        float volume = config.getVolume();
+        world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, volume, pitch);
     }
 }

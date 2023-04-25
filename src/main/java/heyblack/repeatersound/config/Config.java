@@ -2,13 +2,15 @@ package heyblack.repeatersound.config;
 
 public class Config
 {
-    public float basePitch;
-    public boolean useRandomPitch;
+    public float basePitch = 0.5f;
+    public boolean useRandomPitch = false;
+    public float volume = 0.3f;
 
     public void setDefault()
     {
         basePitch = 0.5f;
         useRandomPitch = false;
+        volume = 0.3f;
     }
 
     public float getBasePitch()
@@ -29,5 +31,15 @@ public class Config
     public void setRandomPitch(boolean bl)
     {
         useRandomPitch = bl;
+    }
+
+    public float getVolume()
+    {
+        return volume;
+    }
+
+    public void setVolume(float v)
+    {
+        volume = v;
     }
 }

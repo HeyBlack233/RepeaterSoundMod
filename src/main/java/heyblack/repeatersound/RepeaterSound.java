@@ -18,12 +18,16 @@ public class RepeaterSound implements ClientModInitializer
     public static final Identifier REDSTONE_WIRE_CLICK = new Identifier("repeatersound:redstone_wire_click");
     public static SoundEvent BLOCK_REDSTONE_WIRE_CLICK = new SoundEvent(REDSTONE_WIRE_CLICK);
 
+    public static final Identifier DAYLIGHT_DETECTOR_CLICK = new Identifier("repeatersound:daylight_detector_click");
+    public static SoundEvent BLOCK_DAYLIGHT_DETECTOR_CLICK = new SoundEvent(DAYLIGHT_DETECTOR_CLICK);
+
     ConfigManager cfgManager = ConfigManager.getInstance();
+    static Config config;
 
     @Override
     public void onInitializeClient()
     {
-        cfgManager.loadConfig();
+        config = cfgManager.loadConfig();
 
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("repeatersound")
                         .then(ClientCommandManager.literal("setBasePitch")
@@ -31,23 +35,37 @@ public class RepeaterSound implements ClientModInitializer
                                         .executes(ctx -> saveConfigPitch(FloatArgumentType.getFloat(ctx, "pitch")))))
                         .then(ClientCommandManager.literal("useRandomPitch")
                                 .then(ClientCommandManager.argument("useRandom", BoolArgumentType.bool())
-                                        .executes(ctx -> saveConfigRandom(BoolArgumentType.getBool(ctx, "useRandom"))))));
+                                        .executes(ctx -> saveConfigRandom(BoolArgumentType.getBool(ctx, "useRandom")))))
+                        .then(ClientCommandManager.literal("setVolume")
+                                .then(ClientCommandManager.argument("volume", FloatArgumentType.floatArg())
+                                        .executes(ctx -> saveConfigVolume(FloatArgumentType.getFloat(ctx, "volume"))))));
+    }
+
+    public static Config getConfig()
+    {
+        return config;
     }
 
     public int saveConfigPitch(float pitch)
     {
-        Config cfg = cfgManager.getConfigFromFile();
-        cfg.setBasePitch(pitch);
-        cfgManager.save(cfg);
+        config.basePitch = pitch;
+        cfgManager.save(config);
 
         return 1;
     }
 
     public int saveConfigRandom(boolean random)
     {
-        Config cfg = cfgManager.getConfigFromFile();
-        cfg.setRandomPitch(random);
-        cfgManager.save(cfg);
+        config.useRandomPitch = random;
+        cfgManager.save(config);
+
+        return 1;
+    }
+
+    public int saveConfigVolume(float volume)
+    {
+        config.volume = volume;
+        cfgManager.save(config);
 
         return 1;
     }

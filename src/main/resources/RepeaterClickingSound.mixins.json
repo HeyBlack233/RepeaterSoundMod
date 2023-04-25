@@ -4,9 +4,10 @@
   "package": "heyblack.repeatersound.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "ComparatorBlockMixin",
+    "DaylightDetectorBlockMixin",
     "RedstoneWireBlockMixin",
-    "RepeaterBlockMixin",
-    "ComparatorBlockMixin"
+    "RepeaterBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
