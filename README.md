@@ -7,7 +7,7 @@
 
 ## Description
 
-RepeaterSound is a simple client side mod, the mod added sound events when some blocks are clicked.
+RepeaterSound is a simple client side mod, the mod added sound events when some blocks are clicked. Requires [Fabric API](https://modrinth.com/mod/fabric-api)
 
 Currently supports repeater, redstone wire, daylight detector. The pitch of comparator sound can also be adjusted by the mod.
 
