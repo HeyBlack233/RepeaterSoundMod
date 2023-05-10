@@ -13,11 +13,11 @@ Currently supports repeater, redstone wire, daylight detector. The pitch of comp
 
 ### Repeater
 
-Repeater will play a sound when it got clicked(delay changed), this sound is displayed as "Repeater clicked" in subtitle.
+Repeater will play a sound when it got clicked(delay changed), this sound is displayed as "Repeater clicks" in subtitle.
 
 ### Redstone Wire
 
-Redstone wire will play a sound when it got clicked and the shape is changed between dot and cross, this sound is displayed as "Redstone Wire clicked" in subtitle.
+Redstone wire will play a sound when it got clicked and the shape is changed between dot and cross, this sound is displayed as "Redstone Wire clicks" in subtitle.
 
 ## Configuration
 
