@@ -3,7 +3,7 @@
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/vt4lfXNC?color=%2300AF5C&logo=modrinth&style=flat-square)](https://modrinth.com/mod/repeater-sound)
 [![GitHub all releases](https://img.shields.io/github/downloads/HeyBlack233/RepeaterSoundMod/total?color=191970&logo=github&logoColor=181717&style=flat-square)](https://github.com/HeyBlack233/RepeaterSoundMod/releases)
 ![Mod Version](https://img.shields.io/badge/Version-1.2.0-orange?style=flat-square)
-![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.19-blue?style=flat-square)
+![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.20-blue?style=flat-square)
 
 ## Description
 
