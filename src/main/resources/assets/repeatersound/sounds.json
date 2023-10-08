@@ -16,5 +16,11 @@
     "sounds": [
       "random/click"
     ]
+  },
+  "click_alarm": {
+    "subtitle": "subtitles.repeatersound.click_alarm",
+    "sounds": [
+      "random/successful_hit"
+    ]
   }
 }

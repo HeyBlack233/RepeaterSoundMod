@@ -1,5 +1,6 @@
 {
   "subtitles.repeatersound.repeater_click": "中继器:调节档位",
   "subtitles.repeatersound.redstone_wire_click": "红石线:改变形状",
-  "subtitles.repeatersound.daylight_detector_click": "阳光探测器:转换模式"
+  "subtitles.repeatersound.daylight_detector_click": "阳光探测器:转换模式",
+  "subtitles.repeatersound.click_alarm": "RSMod:警报点击"
 }

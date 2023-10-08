@@ -2,71 +2,72 @@ package heyblack.repeatersound;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
-import heyblack.repeatersound.config.Config;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import heyblack.repeatersound.config.ConfigManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class RepeaterSound implements ClientModInitializer
 {
+    public static final String MOD_ID = "repeatersound";
+    public static final String MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(RuntimeException::new).getMetadata().getVersion().getFriendlyString();
 
-    public static final Identifier REPEATER_CLICK = new Identifier("repeatersound:repeater_click");
-    public static SoundEvent BLOCK_REPEATER_CLICK = new SoundEvent(REPEATER_CLICK);
-
-    public static final Identifier REDSTONE_WIRE_CLICK = new Identifier("repeatersound:redstone_wire_click");
-    public static SoundEvent BLOCK_REDSTONE_WIRE_CLICK = new SoundEvent(REDSTONE_WIRE_CLICK);
-
-    public static final Identifier DAYLIGHT_DETECTOR_CLICK = new Identifier("repeatersound:daylight_detector_click");
-    public static SoundEvent BLOCK_DAYLIGHT_DETECTOR_CLICK = new SoundEvent(DAYLIGHT_DETECTOR_CLICK);
-
-    ConfigManager cfgManager = ConfigManager.getInstance();
-    static Config config;
+    public static final SoundEvent BLOCK_REPEATER_CLICK = register("repeatersound:repeater_click");
+    public static final SoundEvent BLOCK_REDSTONE_WIRE_CLICK = register("repeatersound:redstone_wire_click");
+    public static final SoundEvent BLOCK_DAYLIGHT_DETECTOR_CLICK = register("repeatersound:daylight_detector_click");
+    public static final SoundEvent CLICK_ALARM = register("repeatersound:click_alarm");
 
     @Override
     public void onInitializeClient()
     {
-        config = cfgManager.loadConfig();
+        ConfigManager cfg = ConfigManager.getInstance();
 
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("repeatersound")
+        ClientCommandManager.DISPATCHER.register(
+                ClientCommandManager.literal("repeatersound")
                         .then(ClientCommandManager.literal("setBasePitch")
-                                .then(ClientCommandManager.argument("pitch", FloatArgumentType.floatArg())
-                                        .executes(ctx -> saveConfigPitch(FloatArgumentType.getFloat(ctx, "pitch")))))
+                                .then(ClientCommandManager.argument("basePitch", FloatArgumentType.floatArg())
+                                        .executes(ctx -> cfg.setConfig(
+                                                "basePitch",
+                                                String.valueOf(FloatArgumentType.getFloat(ctx, "basePitch"))
+                                        ))))
+
                         .then(ClientCommandManager.literal("useRandomPitch")
                                 .then(ClientCommandManager.argument("useRandom", BoolArgumentType.bool())
-                                        .executes(ctx -> saveConfigRandom(BoolArgumentType.getBool(ctx, "useRandom")))))
+                                        .executes(ctx -> cfg.setConfig(
+                                                "useRandom",
+                                                String.valueOf(BoolArgumentType.getBool(ctx, "useRandom"))
+                                        ))))
+
                         .then(ClientCommandManager.literal("setVolume")
                                 .then(ClientCommandManager.argument("volume", FloatArgumentType.floatArg())
-                                        .executes(ctx -> saveConfigVolume(FloatArgumentType.getFloat(ctx, "volume"))))));
+                                        .executes(ctx -> cfg.setConfig(
+                                                "volume",
+                                                String.valueOf(FloatArgumentType.getFloat(ctx, "volume"))
+                                        ))))
+                        .then(ClientCommandManager.literal("interactionMode")
+                                .then(ClientCommandManager.argument("mode", StringArgumentType.string())
+                                        .suggests(
+                                                (ctx, builder) ->
+                                                {
+                                                    builder.suggest("NORMAL");
+                                                    builder.suggest("ALARM");
+                                                    builder.suggest("DISABLED");
+
+                                                    return builder.buildFuture();
+                                                }
+                                        )
+                                        .executes(ctx -> cfg.setConfig(
+                                                "interactionMode",
+                                                StringArgumentType.getString(ctx, "mode")
+                                        ))))
+        );
     }
 
-    public static Config getConfig()
-    {
-        return config;
-    }
-
-    public int saveConfigPitch(float pitch)
-    {
-        config.basePitch = pitch;
-        cfgManager.save(config);
-
-        return 1;
-    }
-
-    public int saveConfigRandom(boolean random)
-    {
-        config.useRandomPitch = random;
-        cfgManager.save(config);
-
-        return 1;
-    }
-
-    public int saveConfigVolume(float volume)
-    {
-        config.volume = volume;
-        cfgManager.save(config);
-
-        return 1;
+    private static SoundEvent register(String id) {
+        return (SoundEvent)Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(new Identifier(id)));
     }
 }

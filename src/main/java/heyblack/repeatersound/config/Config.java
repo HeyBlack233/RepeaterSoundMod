@@ -1,5 +1,6 @@
 package heyblack.repeatersound.config;
 
+@Deprecated
 public class Config
 {
     public float basePitch = 0.5f;

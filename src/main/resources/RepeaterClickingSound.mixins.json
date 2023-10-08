@@ -4,6 +4,7 @@
   "package": "heyblack.repeatersound.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "ClientPlayerInteractionManagerMixin",
     "ComparatorBlockMixin",
     "DaylightDetectorBlockMixin",
     "RedstoneWireBlockMixin",

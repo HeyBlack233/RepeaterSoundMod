@@ -1,7 +1,7 @@
 package heyblack.repeatersound.mixin;
 
+import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.RepeaterSound;
-import heyblack.repeatersound.config.Config;
 import heyblack.repeatersound.config.ConfigManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -32,12 +33,28 @@ public class RedstoneWireBlockMixin
     @Inject( method = "onUse", at = @At(value = "RETURN", ordinal = 1))
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        Config config = RepeaterSound.getConfig();
-        float basePitch = config.getBasePitch();
-        float pitch = config.getRandomPitch() ?
-                (float) (basePitch + (Math.random() - 0.5) * 0.25) :
-                this.isFullyConnected(state) ? basePitch : basePitch + 0.05f;
-        float volume = config.getVolume();
-        world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, volume, pitch);
+        if (world.isClient)
+        {
+            ConfigManager cfg = ConfigManager.getInstance();
+            float basePitch = Float.parseFloat(cfg.getConfig("basePitch"));
+            float pitch = Boolean.parseBoolean(cfg.getConfig("useRandom")) ?
+                    (float) (basePitch + (Math.random() - 0.5) * 0.25) :
+                    this.isFullyConnected(state) ?
+                            basePitch :
+                            basePitch + 0.05f;
+            float volume = Float.parseFloat(cfg.getConfig("volume"));
+
+            InteractionMode mode = InteractionMode.valueOf(cfg.getConfig("interactionMode"));
+            switch (mode)
+            {
+                case NORMAL:
+                    world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, volume, pitch);
+                    break;
+                case ALARM:
+                    world.playSound(player, pos, RepeaterSound.CLICK_ALARM, SoundCategory.BLOCKS, volume, pitch);
+                    player.sendMessage(Text.of("Clicked " + state.getBlock().toString() + " At: " + pos.toShortString()), false);
+                    break;
+            }
+        }
     }
 }
