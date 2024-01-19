@@ -93,7 +93,8 @@ public class ConfigUpdater
             {
                 reader = new JsonReader(new FileReader(path.toFile()));
                 cfg = new Gson().fromJson(reader, Map.class);
-//                Files.delete(path);
+                reader.close();
+                Files.delete(path);
                 return cfg;
             }
             catch (IOException e)
