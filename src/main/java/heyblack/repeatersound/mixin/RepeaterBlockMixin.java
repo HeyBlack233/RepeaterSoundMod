@@ -48,7 +48,7 @@ public class RepeaterBlockMixin
                     break;
                 case ALARM:
                     world.playSound(player, pos, RepeaterSound.CLICK_ALARM, SoundCategory.BLOCKS, volume, pitch);
-                    player.sendMessage(Text.of("Clicked " + state.getBlock().toString() + " At: " + pos.toShortString()), false);
+                    player.sendMessage(Text.of(cfg.getAlarmMessage(state, pos)), false);
                     break;
             }
         }

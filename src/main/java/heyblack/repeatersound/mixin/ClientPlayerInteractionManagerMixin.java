@@ -32,7 +32,7 @@ public class ClientPlayerInteractionManagerMixin
             Block block = world.getBlockState(hitResult.getBlockPos()).getBlock();
             if (AffectedBlocks.get().contains(block))
             {
-                player.sendMessage(Text.of("Interaction cancelled by RSMod"), true);
+                player.sendMessage(Text.of(cfg.getConfig("disabledMessage")), true);
                 cir.setReturnValue(ActionResult.FAIL);
             }
         }

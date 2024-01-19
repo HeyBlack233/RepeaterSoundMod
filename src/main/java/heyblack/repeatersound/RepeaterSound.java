@@ -48,6 +48,7 @@ public class RepeaterSound implements ClientModInitializer
                                                 "volume",
                                                 String.valueOf(FloatArgumentType.getFloat(ctx, "volume"))
                                         ))))
+
                         .then(ClientCommandManager.literal("interactionMode")
                                 .then(ClientCommandManager.argument("mode", StringArgumentType.string())
                                         .suggests(
@@ -63,6 +64,20 @@ public class RepeaterSound implements ClientModInitializer
                                         .executes(ctx -> cfg.setConfig(
                                                 "interactionMode",
                                                 StringArgumentType.getString(ctx, "mode")
+                                        ))))
+
+                        .then(ClientCommandManager.literal("alarmMessage")
+                                .then(ClientCommandManager.argument("alarmMessage", StringArgumentType.string())
+                                        .executes(ctx -> cfg.setConfig(
+                                                "alarmMessage",
+                                                String.valueOf(StringArgumentType.getString(ctx, "alarmMessage"))
+                                        ))))
+
+                        .then(ClientCommandManager.literal("disabledMessage")
+                                .then(ClientCommandManager.argument("disabledMessage", StringArgumentType.string())
+                                        .executes(ctx -> cfg.setConfig(
+                                                "disabledMessage",
+                                                String.valueOf(StringArgumentType.getString(ctx, "disabledMessage"))
                                         ))))
         );
     }

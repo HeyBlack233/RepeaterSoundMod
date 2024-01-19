@@ -3,6 +3,8 @@ package heyblack.repeatersound.config;
 import com.google.gson.Gson;
 import heyblack.repeatersound.RepeaterSound;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -83,6 +85,8 @@ public class ConfigManager
         checker.put("volume", "0.3");
         checker.put("useRandomPitch", "false");
         checker.put("interactionMode", "NORMAL");
+        checker.put("alarmMessage", "Clicked {Block} At: {Pos}");
+        checker.put("disabledMessage", "Interaction cancelled by RSMod");
 
         for (Map.Entry<String, String> entry : checker.entrySet())
         {
@@ -94,5 +98,12 @@ public class ConfigManager
         }
 
         return cfgToCheck;
+    }
+
+    public String getAlarmMessage(BlockState state, BlockPos pos)
+    {
+        return getConfig("alarmMessage")
+                .replace("{Block}", state.getBlock().toString())
+                .replace("{Pos}", pos.toShortString());
     }
 }
