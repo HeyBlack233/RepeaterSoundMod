@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import heyblack.repeatersound.config.ConfigManager;
+import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.loader.api.FabricLoader;
@@ -80,6 +81,8 @@ public class RepeaterSound implements ClientModInitializer
                                                 String.valueOf(StringArgumentType.getString(ctx, "disabledMessage"))
                                         ))))
         );
+
+        ServerCloseCallback.EVENT.register(cfg);
     }
 
     private static SoundEvent register(String id) {

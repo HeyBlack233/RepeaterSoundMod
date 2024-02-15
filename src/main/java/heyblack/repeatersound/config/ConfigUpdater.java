@@ -2,13 +2,10 @@ package heyblack.repeatersound.config;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import heyblack.repeatersound.RepeaterSound;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;

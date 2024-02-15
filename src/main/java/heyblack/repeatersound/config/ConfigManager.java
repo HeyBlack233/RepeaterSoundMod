@@ -2,6 +2,7 @@ package heyblack.repeatersound.config;
 
 import com.google.gson.Gson;
 import heyblack.repeatersound.RepeaterSound;
+import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -14,13 +15,15 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConfigManager
+public class ConfigManager implements ServerCloseCallback
 {
     Logger logger = LogManager.getLogger();
 
     private Path path = FabricLoader.getInstance().getConfigDir().resolve("repeatersound" + RepeaterSound.MOD_VERSION + ".json");
     private Map<String, String> config = new HashMap<>();
     private Gson gson = new Gson();
+
+    private boolean changed = false;
 
     private static ConfigManager instance = new ConfigManager();
     public static ConfigManager getInstance()
@@ -63,19 +66,10 @@ public class ConfigManager
 
     public int setConfig(String key, String value)
     {
+        logger.info("[RepeaterSound] Setting config: {" + key + ": " + value + "}");
         config.put(key, value);
-        try
-        {
-            logger.info("[RepeaterSound] Writing config to file: {" + key + ": " + value + "}");
-            Files.write(path, gson.toJson(config).getBytes());
-            return 1;
-        }
-        catch (IOException e)
-        {
-            logger.error("[RepeaterSound] Failed to write config to file!");
-            e.printStackTrace();
-            return 0;
-        }
+        changed = true;
+        return 1;
     }
 
     public Map<String, String> fixConfig(Map<String, String> cfgToCheck)
@@ -105,5 +99,23 @@ public class ConfigManager
         return getConfig("alarmMessage")
                 .replace("{Block}", state.getBlock().toString())
                 .replace("{Pos}", pos.toShortString());
+    }
+
+    @Override
+    public void saveConfig() 
+    {
+        if (changed) 
+        {
+            try
+            {
+                logger.info("[RepeaterSound] Writing config to file");
+                Files.write(path, gson.toJson(config).getBytes());
+            }
+            catch (IOException e)
+            {
+                logger.error("[RepeaterSound] Failed to write config to file!");
+                e.printStackTrace();
+            }
+        }
     }
 }
