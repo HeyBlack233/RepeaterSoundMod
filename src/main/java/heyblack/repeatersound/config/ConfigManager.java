@@ -114,8 +114,8 @@ public class ConfigManager implements ServerCloseCallback
                 }
                 break;
             
-            case "useRandomPitch":
-                if (value.equalsIgnoreCase("true")) {
+            case "useRandom":
+                if (value.equals("true")) {
                     player.sendMessage(Text.of("Random pitch offset ON"), false);
                     config.put(key, value);
                     changed = true;
@@ -123,7 +123,7 @@ public class ConfigManager implements ServerCloseCallback
                     return 1;
                 }
 
-                if (value.equalsIgnoreCase("false")) {
+                if (value.equals("false")) {
                     player.sendMessage(Text.of("Random pitch offset OFF"), false);
                     config.put(key, value);
                     changed = true;
@@ -157,7 +157,7 @@ public class ConfigManager implements ServerCloseCallback
         Map<String, String> checker = new HashMap<>();
         checker.put("basePitch", "0.5");
         checker.put("volume", "0.3");
-        checker.put("useRandomPitch", "false");
+        checker.put("useRandom", "false");
         checker.put("interactionMode", "NORMAL");
         checker.put("alarmMessage", "Clicked {Block} At: {Pos}");
         checker.put("disabledMessage", "Interaction cancelled by RSMod");
