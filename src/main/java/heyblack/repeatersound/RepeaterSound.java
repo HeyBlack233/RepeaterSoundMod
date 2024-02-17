@@ -33,21 +33,24 @@ public class RepeaterSound implements ClientModInitializer
                                 .then(ClientCommandManager.argument("basePitch", FloatArgumentType.floatArg())
                                         .executes(ctx -> cfg.setConfig(
                                                 "basePitch",
-                                                String.valueOf(FloatArgumentType.getFloat(ctx, "basePitch"))
+                                                String.valueOf(FloatArgumentType.getFloat(ctx, "basePitch")),
+                                                ctx.getSource().getPlayer()
                                         ))))
 
                         .then(ClientCommandManager.literal("useRandomPitch")
                                 .then(ClientCommandManager.argument("useRandom", BoolArgumentType.bool())
                                         .executes(ctx -> cfg.setConfig(
                                                 "useRandom",
-                                                String.valueOf(BoolArgumentType.getBool(ctx, "useRandom"))
+                                                String.valueOf(BoolArgumentType.getBool(ctx, "useRandom")),
+                                                ctx.getSource().getPlayer()
                                         ))))
 
                         .then(ClientCommandManager.literal("setVolume")
                                 .then(ClientCommandManager.argument("volume", FloatArgumentType.floatArg())
                                         .executes(ctx -> cfg.setConfig(
                                                 "volume",
-                                                String.valueOf(FloatArgumentType.getFloat(ctx, "volume"))
+                                                String.valueOf(FloatArgumentType.getFloat(ctx, "volume")),
+                                                ctx.getSource().getPlayer()
                                         ))))
 
                         .then(ClientCommandManager.literal("interactionMode")
@@ -64,21 +67,24 @@ public class RepeaterSound implements ClientModInitializer
                                         )
                                         .executes(ctx -> cfg.setConfig(
                                                 "interactionMode",
-                                                StringArgumentType.getString(ctx, "mode")
+                                                StringArgumentType.getString(ctx, "mode"),
+                                                ctx.getSource().getPlayer()
                                         ))))
 
                         .then(ClientCommandManager.literal("alarmMessage")
-                                .then(ClientCommandManager.argument("alarmMessage", StringArgumentType.string())
+                                .then(ClientCommandManager.argument("message", StringArgumentType.string())
                                         .executes(ctx -> cfg.setConfig(
                                                 "alarmMessage",
-                                                String.valueOf(StringArgumentType.getString(ctx, "alarmMessage"))
+                                                String.valueOf(StringArgumentType.getString(ctx, "message")),
+                                                ctx.getSource().getPlayer()
                                         ))))
 
                         .then(ClientCommandManager.literal("disabledMessage")
-                                .then(ClientCommandManager.argument("disabledMessage", StringArgumentType.string())
+                                .then(ClientCommandManager.argument("message", StringArgumentType.string())
                                         .executes(ctx -> cfg.setConfig(
                                                 "disabledMessage",
-                                                String.valueOf(StringArgumentType.getString(ctx, "disabledMessage"))
+                                                String.valueOf(StringArgumentType.getString(ctx, "message")),
+                                                ctx.getSource().getPlayer()
                                         ))))
         );
 

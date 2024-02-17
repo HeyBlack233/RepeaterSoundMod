@@ -41,7 +41,7 @@ There are three Interaction Modes to change the behavior of blocks when they are
 - `DISABLED`: This mode disables interactions with blocks affected by this mod.
   - The alarm message can be configured using a [command](#command) provided by this mod
 
-You can switch between interaction modes using the command `/repeatersound interactionMode <mode>`. The arguments are: `NORMAL`, `ALARM`, `DISABLED`. <br>Please note that these arguments are case-sensitive and must be in uppercase.
+You can switch between interaction modes using the command `/repeatersound interactionMode <mode>`. The arguments are: `NORMAL`, `ALARM`, `DISABLED`.
 
 ## Configuration
 
