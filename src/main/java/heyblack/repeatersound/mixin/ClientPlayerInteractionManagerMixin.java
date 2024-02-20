@@ -8,11 +8,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,12 +23,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ClientPlayerInteractionManagerMixin
 {
     @Inject(method = "interactBlock", at = @At(value = "HEAD"), cancellable = true)
-    public void disableInteraction(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir)
+    public void disableInteraction(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir)
     {
         ConfigManager cfg = ConfigManager.getInstance();
         InteractionMode mode = InteractionMode.valueOf(cfg.getConfig("interactionMode"));
         if (mode == InteractionMode.DISABLED)
         {
+            World world = player.getWorld();
             Block block = world.getBlockState(hitResult.getBlockPos()).getBlock();
             if (AffectedBlocks.get().contains(block))
             {

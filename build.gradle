@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.0.11'
+    id 'fabric-loom' version '1.1-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -7,16 +7,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven {
-        url 'https://maven.aliyun.com/nexus/content/groups/public'
-    }
-    maven {
-        url 'https://repository.hanbings.io/proxy'
-    }
-    maven {
-        name = "Nova Committee - Release"
-        url = "https://maven.nova-committee.cn/releases/"
-    }
+
 }
 
 dependencies {
@@ -38,7 +29,7 @@ processResources {
     }
 }
 
-def targetJavaVersion = 8
+def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
     // this fixes some edge cases with special characters not displaying correctly
