@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import heyblack.repeatersound.config.ConfigManager;
+import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.loader.api.FabricLoader;
@@ -32,22 +33,26 @@ public class RepeaterSound implements ClientModInitializer
                                 .then(ClientCommandManager.argument("basePitch", FloatArgumentType.floatArg())
                                         .executes(ctx -> cfg.setConfig(
                                                 "basePitch",
-                                                String.valueOf(FloatArgumentType.getFloat(ctx, "basePitch"))
+                                                String.valueOf(FloatArgumentType.getFloat(ctx, "basePitch")),
+                                                ctx.getSource().getPlayer()
                                         ))))
 
                         .then(ClientCommandManager.literal("useRandomPitch")
                                 .then(ClientCommandManager.argument("useRandom", BoolArgumentType.bool())
                                         .executes(ctx -> cfg.setConfig(
                                                 "useRandom",
-                                                String.valueOf(BoolArgumentType.getBool(ctx, "useRandom"))
+                                                String.valueOf(BoolArgumentType.getBool(ctx, "useRandom")),
+                                                ctx.getSource().getPlayer()
                                         ))))
 
                         .then(ClientCommandManager.literal("setVolume")
                                 .then(ClientCommandManager.argument("volume", FloatArgumentType.floatArg())
                                         .executes(ctx -> cfg.setConfig(
                                                 "volume",
-                                                String.valueOf(FloatArgumentType.getFloat(ctx, "volume"))
+                                                String.valueOf(FloatArgumentType.getFloat(ctx, "volume")),
+                                                ctx.getSource().getPlayer()
                                         ))))
+
                         .then(ClientCommandManager.literal("interactionMode")
                                 .then(ClientCommandManager.argument("mode", StringArgumentType.string())
                                         .suggests(
@@ -62,9 +67,28 @@ public class RepeaterSound implements ClientModInitializer
                                         )
                                         .executes(ctx -> cfg.setConfig(
                                                 "interactionMode",
-                                                StringArgumentType.getString(ctx, "mode")
+                                                StringArgumentType.getString(ctx, "mode"),
+                                                ctx.getSource().getPlayer()
+                                        ))))
+
+                        .then(ClientCommandManager.literal("alarmMessage")
+                                .then(ClientCommandManager.argument("message", StringArgumentType.string())
+                                        .executes(ctx -> cfg.setConfig(
+                                                "alarmMessage",
+                                                String.valueOf(StringArgumentType.getString(ctx, "message")),
+                                                ctx.getSource().getPlayer()
+                                        ))))
+
+                        .then(ClientCommandManager.literal("disabledMessage")
+                                .then(ClientCommandManager.argument("message", StringArgumentType.string())
+                                        .executes(ctx -> cfg.setConfig(
+                                                "disabledMessage",
+                                                String.valueOf(StringArgumentType.getString(ctx, "message")),
+                                                ctx.getSource().getPlayer()
                                         ))))
         );
+
+        ServerCloseCallback.EVENT.register(cfg);
     }
 
     private static SoundEvent register(String id) {
