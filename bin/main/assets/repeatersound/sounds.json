@@ -1,0 +1,26 @@
+{
+  "repeater_click": {
+    "subtitle": "subtitles.repeatersound.repeater_click",
+    "sounds": [
+      "random/click"
+    ]
+  },
+  "redstone_wire_click": {
+    "subtitle": "subtitles.repeatersound.redstone_wire_click",
+    "sounds": [
+      "random/click"
+    ]
+  },
+  "daylight_detector_click": {
+    "subtitle": "subtitles.repeatersound.daylight_detector_click",
+    "sounds": [
+      "random/click"
+    ]
+  },
+  "click_alarm": {
+    "subtitle": "subtitles.repeatersound.click_alarm",
+    "sounds": [
+      "random/successful_hit"
+    ]
+  }
+}
