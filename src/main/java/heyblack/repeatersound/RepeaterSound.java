@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import heyblack.repeatersound.config.ConfigManager;
+import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
@@ -11,6 +12,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RepeaterSound implements ClientModInitializer
 {
@@ -21,6 +24,8 @@ public class RepeaterSound implements ClientModInitializer
     public static final SoundEvent BLOCK_REDSTONE_WIRE_CLICK = register("repeatersound:redstone_wire_click");
     public static final SoundEvent BLOCK_DAYLIGHT_DETECTOR_CLICK = register("repeatersound:daylight_detector_click");
     public static final SoundEvent CLICK_ALARM = register("repeatersound:click_alarm");
+
+    public static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void onInitializeClient()
@@ -58,9 +63,10 @@ public class RepeaterSound implements ClientModInitializer
                                         .suggests(
                                                 (ctx, builder) ->
                                                 {
-                                                    builder.suggest("NORMAL");
-                                                    builder.suggest("ALARM");
-                                                    builder.suggest("DISABLED");
+                                                    for (InteractionMode type : InteractionMode.values())
+                                                    {
+                                                        builder.suggest(type.id);
+                                                    }
 
                                                     return builder.buildFuture();
                                                 }

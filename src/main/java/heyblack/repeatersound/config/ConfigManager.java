@@ -1,6 +1,7 @@
 package heyblack.repeatersound.config;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import heyblack.repeatersound.RepeaterSound;
 import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.util.ServerCloseCallback;
@@ -9,7 +10,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
@@ -20,14 +20,14 @@ import java.util.Map;
 
 public class ConfigManager implements ServerCloseCallback
 {
-    Logger logger = LogManager.getLogger();
+    Logger logger = RepeaterSound.LOGGER;
 
     private Path path = FabricLoader.getInstance().getConfigDir().resolve(
         "repeatersound" +
         RepeaterSound.MOD_VERSION + ".json"
     );
     private Map<String, String> config = new HashMap<>();
-    private Gson gson = new Gson();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private boolean changed = false;
 
@@ -45,22 +45,22 @@ public class ConfigManager implements ServerCloseCallback
             if (Files.exists(path))
             {
                 // read existing config file
-                logger.info("[RepeaterSound] Found config file");
+                logger.info("Found config file");
                 String content = new String(Files.readAllBytes(path));
-                config = fixConfig(gson.fromJson(content, Map.class));
+                config = fixConfig(GSON.fromJson(content, Map.class));
             }
             else
             {
                 // create or update config file
-                logger.info("[RepeaterSound] Missing correct config file, trying to create or update");
+                logger.info("Missing correct config file, trying to create or update");
                 config = ConfigUpdater.update();
-                Files.write(path, gson.toJson(fixConfig(config)).getBytes());
-                logger.info("[RepeaterSound] Config file initialized");
+                Files.write(path, GSON.toJson(fixConfig(config)).getBytes());
+                logger.info("Config file initialized");
             }
         }
         catch (IOException e)
         {
-            logger.error("[RepeaterSound] Failed to initialize config file!");
+            logger.error("Failed to initialize config file!");
             e.printStackTrace();
         }
     }
@@ -167,7 +167,7 @@ public class ConfigManager implements ServerCloseCallback
             if (!cfgToCheck.containsKey(entry.getKey()))
             {
                 cfgToCheck.put(entry.getKey(), entry.getValue());
-                logger.warn("[RepeaterSound] Missing config option: " +
+                logger.warn("Missing config option: " +
                 entry.getKey() + ", added with default value: " + entry.getValue());
             }
         }
@@ -189,12 +189,12 @@ public class ConfigManager implements ServerCloseCallback
         {
             try
             {
-                logger.info("[RepeaterSound] Writing config to file");
-                Files.write(path, gson.toJson(config).getBytes());
+                logger.info("Writing config to file");
+                Files.write(path, GSON.toJson(config).getBytes());
             }
             catch (IOException e)
             {
-                logger.error("[RepeaterSound] Failed to write config to file!");
+                logger.error("Failed to write config to file!");
                 e.printStackTrace();
             }
         }

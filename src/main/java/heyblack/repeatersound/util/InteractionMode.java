@@ -2,7 +2,13 @@ package heyblack.repeatersound.util;
 
 public enum InteractionMode
 {
-    NORMAL,
-    ALARM,
-    DISABLED
+    NORMAL("normal"),
+    ALARM("alarm"),
+    DISABLED("disabled");
+
+    public final String id;
+
+    InteractionMode(String id) {
+        this.id = id;
+    }
 }
