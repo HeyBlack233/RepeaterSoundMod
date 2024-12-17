@@ -10,21 +10,19 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ConfigManager implements ServerCloseCallback
 {
     private Path path = FabricLoader.getInstance().getConfigDir().resolve(
-        "repeatersound" +
-        RepeaterSound.MOD_VERSION + ".json"
+        "repeatersound.json"
     );
-    private Map<String, String> config = new HashMap<>();
+    private Map<String, String> config = new LinkedHashMap<>();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private boolean changed = false;
@@ -152,7 +150,8 @@ public class ConfigManager implements ServerCloseCallback
 
     public Map<String, String> fixConfig(Map<String, String> cfgToCheck)
     {
-        Map<String, String> checker = new HashMap<>();
+        Map<String, String> checker = new LinkedHashMap<>();
+        checker.put("version", RepeaterSound.MOD_VERSION);
         checker.put("basePitch", "0.5");
         checker.put("volume", "0.3");
         checker.put("useRandom", "false");

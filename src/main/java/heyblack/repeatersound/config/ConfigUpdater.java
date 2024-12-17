@@ -5,26 +5,25 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import heyblack.repeatersound.RepeaterSound;
 import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
 public class ConfigUpdater
 {
-    static Path dir = FabricLoader.getInstance().getConfigDir();
+    private static final Path DIR = FabricLoader.getInstance().getConfigDir();
 
-    private static final Path CONFIG_OLD = dir.resolve("repeatersound.json5");
-    private static final String CONFIG_DIR = dir.toString();
+    private static final Path CONFIG_OLD = DIR.resolve("repeatersound.json5");
+    private static final String CONFIG_DIR = DIR.toString();
     private static final Pattern CONFIG_PATTERN = Pattern.compile("repeatersound\\d+\\.\\d+\\.\\d+\\.json");
+    private static final Path CONFIG_PATH = DIR.resolve("repeatersound.json");
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -54,7 +53,7 @@ public class ConfigUpdater
 
     public static Map<String, String> update()
     {
-        Map<String, String> cfg = new HashMap<>();
+        Map<String, String> cfg = new LinkedHashMap<>();
         JsonReader reader;
 
         // version <= 1.2.0
@@ -70,7 +69,7 @@ public class ConfigUpdater
                 String random = String.valueOf(cfg_old.getRandomPitch());
                 cfg.put("basePitch", pitch);
                 cfg.put("volume", volume);
-                cfg.put("useRandomPitch", random);
+                cfg.put("useRandomPitch", random); // TODO: FIX THIS!!!!!
 
                 reader.close();
                 Files.delete(CONFIG_OLD);
@@ -84,9 +83,8 @@ public class ConfigUpdater
             }
         }
 
-        // version >= 1.3.0
         Path path = findConfigFile();
-        if (path != null)
+        if (path != null) // version from 1.3.0 to 1.5.0
         {
             try
             {
@@ -102,6 +100,9 @@ public class ConfigUpdater
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
+        } else // version >= 1.6.0
+        {
+            // not yet
         }
 
         return cfg;
