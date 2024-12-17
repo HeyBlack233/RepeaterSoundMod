@@ -25,7 +25,7 @@ public class RepeaterSound implements ClientModInitializer
     public static final SoundEvent BLOCK_DAYLIGHT_DETECTOR_CLICK = register("repeatersound:daylight_detector_click");
     public static final SoundEvent CLICK_ALARM = register("repeatersound:click_alarm");
 
-    public static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void onInitializeClient()
@@ -99,5 +99,17 @@ public class RepeaterSound implements ClientModInitializer
 
     private static SoundEvent register(String id) {
         return (SoundEvent)Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(new Identifier(id)));
+    }
+
+    public static void info(String s) {
+        LOGGER.info("[RepeaterSound] " + s);
+    }
+
+    public static void warn(String s) {
+        LOGGER.warn("[RepeaterSound] " + s);
+    }
+
+    public static void error(String s) {
+        LOGGER.error("[RepeaterSound] " + s);
     }
 }
