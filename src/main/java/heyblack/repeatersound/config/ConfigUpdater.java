@@ -69,7 +69,7 @@ public class ConfigUpdater
                 String random = String.valueOf(cfg_old.getRandomPitch());
                 cfg.put("basePitch", pitch);
                 cfg.put("volume", volume);
-                cfg.put("useRandomPitch", random); // TODO: FIX THIS!!!!!
+                cfg.put("useRandom", random);
 
                 reader.close();
                 Files.delete(CONFIG_OLD);
