@@ -1,9 +1,9 @@
 package heyblack.repeatersound.mixin;
 
-import heyblack.repeatersound.config.ConfigOption;
-import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.RepeaterSound;
 import heyblack.repeatersound.config.ConfigManager;
+import heyblack.repeatersound.config.ConfigOption;
+import heyblack.repeatersound.util.InteractionMode;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;

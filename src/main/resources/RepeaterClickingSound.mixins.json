@@ -7,9 +7,9 @@
     "ClientPlayerInteractionManagerMixin",
     "ComparatorBlockMixin",
     "DaylightDetectorBlockMixin",
+    "MinecraftServerMixin",
     "RedstoneWireBlockMixin",
-    "RepeaterBlockMixin",
-    "MinecraftServerMixin"
+    "RepeaterBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
