@@ -1,8 +1,9 @@
 package heyblack.repeatersound.mixin;
 
-import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.RepeaterSound;
 import heyblack.repeatersound.config.ConfigManager;
+import heyblack.repeatersound.config.ConfigOption;
+import heyblack.repeatersound.util.InteractionMode;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -35,15 +36,15 @@ public class DaylightDetectorBlockMixin
         if (world.isClient)
         {
             ConfigManager cfg = ConfigManager.getInstance();
-            float basePitch = Float.parseFloat(cfg.getConfig("basePitch"));
-            float pitch = Boolean.parseBoolean(cfg.getConfig("useRandom")) ?
+            float basePitch = Float.parseFloat(cfg.getConfig(ConfigOption.BASE_PITCH.id));
+            float pitch = Boolean.parseBoolean(cfg.getConfig(ConfigOption.USE_RANDOM.id)) ?
                     (float) (basePitch + (Math.random() - 0.5) * 0.25) :
                     state.cycle(INVERTED).get(INVERTED) ?
                             basePitch :
                             basePitch + 0.05f;
-            float volume = Float.parseFloat(cfg.getConfig("volume"));
+            float volume = Float.parseFloat(cfg.getConfig(ConfigOption.VOLUME.id));
 
-            InteractionMode mode = InteractionMode.valueOf(cfg.getConfig("interactionMode"));
+            InteractionMode mode = InteractionMode.valueOf(cfg.getConfig(ConfigOption.INTERACTION_MODE.id));
             switch (mode)
             {
                 case NORMAL:
