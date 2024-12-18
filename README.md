@@ -2,8 +2,8 @@
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/vt4lfXNC?color=%2300AF5C&logo=modrinth&style=flat-square)](https://modrinth.com/mod/repeater-sound)
 [![GitHub all releases](https://img.shields.io/github/downloads/HeyBlack233/RepeaterSoundMod/total?color=191970&logo=github&logoColor=181717&style=flat-square)](https://github.com/HeyBlack233/RepeaterSoundMod/releases)
-![Mod Version](https://img.shields.io/badge/Version-1.4.0-orange?style=flat-square)
-![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.20-blue?style=flat-square)
+![Mod Version](https://img.shields.io/badge/Version-1.5.0-orange?style=flat-square)
+![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.21-blue?style=flat-square)
 
 ## Features
 
@@ -41,7 +41,7 @@ There are three Interaction Modes to change the behavior of blocks when they are
 - `DISABLED`: This mode disables interactions with blocks affected by this mod.
   - The alarm message can be configured using a [command](#command) provided by this mod
 
-You can switch between interaction modes using the command `/repeatersound interactionMode <mode>`. The arguments are: `NORMAL`, `ALARM`, `DISABLED`.
+You can switch between interaction modes using the command `/repeatersound interactionMode <mode>`. The arguments are: `NORMAL`, `ALARM`, `DISABLED`. <br>Please note that these arguments are case-sensitive and must be in uppercase.
 
 ## Configuration
 
@@ -65,6 +65,11 @@ Command `/repeatersound` allows you to edit the options in-game, here is a list 
   - Used to set the message that will display on screen in `DISABLED` interaction mode.
   - Please note that the quotes outside of `<message>` are necessary.
 
+### Mod Menu
+
+Repeater Sound Mod provides a config screen in [Mod Menu](https://modrinth.com/mod/modmenu) if [Cloth Config API](https://modrinth.com/mod/cloth-config) is installed.
+
 ### Config File
 
-After the first initialize of the mod, a config file `repeatersound[version].json` will be created in the game's `config` directory. You can edit this file manually if you want.
+After the first initialize of the mod, a config file `repeatersound.json` will be created in the game's `config` directory. You can edit this file manually if you want.
+
