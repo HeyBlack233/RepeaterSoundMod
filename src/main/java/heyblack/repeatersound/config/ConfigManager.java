@@ -10,31 +10,28 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ConfigManager implements ServerCloseCallback
 {
-    Logger logger = RepeaterSound.LOGGER;
-
-    private Path path = FabricLoader.getInstance().getConfigDir().resolve(
-        "repeatersound" +
-        RepeaterSound.MOD_VERSION + ".json"
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve(
+        "repeatersound.json"
     );
-    private Map<String, String> config = new HashMap<>();
+    private Map<String, String> config = new LinkedHashMap<>();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private boolean changed = false;
 
-    private static ConfigManager instance = new ConfigManager();
+    private static final ConfigManager INSTANCE = new ConfigManager();
     public static ConfigManager getInstance()
     {
-        return instance;
+        return INSTANCE;
     }
 
     public ConfigManager()
@@ -42,25 +39,62 @@ public class ConfigManager implements ServerCloseCallback
         // initialize config
         try
         {
-            if (Files.exists(path))
+            if (Files.exists(CONFIG_PATH))
             {
                 // read existing config file
-                logger.info("Found config file");
-                String content = new String(Files.readAllBytes(path));
+                RepeaterSound.info("Found config file");
+                String content = new String(Files.readAllBytes(CONFIG_PATH));
                 config = fixConfig(GSON.fromJson(content, Map.class));
             }
             else
             {
                 // create or update config file
-                logger.info("Missing correct config file, trying to create or update");
+                RepeaterSound.info("Missing correct config file, trying to create or update");
                 config = ConfigUpdater.update();
-                Files.write(path, GSON.toJson(fixConfig(config)).getBytes());
-                logger.info("Config file initialized");
+                Files.write(CONFIG_PATH, GSON.toJson(fixConfig(config)).getBytes());
             }
+            RepeaterSound.info("Validating config options...");
+            boolean bl = false;
+
+            for (Map.Entry<String, String> entry : config.entrySet()) {
+                switch (entry.getKey()) {
+                    case "base_pitch":
+                        try {
+                            Float.parseFloat(entry.getValue());
+                        } catch (NullPointerException | NumberFormatException e) {
+                            entry.setValue(ConfigOption.BASE_PITCH.defaultValue);
+                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.BASE_PITCH.defaultValue);
+                            bl = true;
+                        }
+                        break;
+                    case "volume":
+                        try {
+                            Float.parseFloat(entry.getValue());
+                        } catch (NullPointerException | NumberFormatException e) {
+                            entry.setValue(ConfigOption.VOLUME.defaultValue);
+                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.VOLUME.defaultValue);
+                            bl = true;
+                        }
+                        break;
+                    case "interaction_mode":
+                        try {
+                            InteractionMode.valueOf(entry.getValue());
+                        } catch (NullPointerException | IllegalArgumentException e) {
+                            entry.setValue(ConfigOption.INTERACTION_MODE.defaultValue);
+                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.INTERACTION_MODE.defaultValue);
+                            bl = true;
+                        }
+                }
+            }
+            if (bl) {
+                Files.write(CONFIG_PATH, GSON.toJson(config).getBytes());
+            }
+
+            RepeaterSound.info("Config file initialized");
         }
         catch (IOException e)
         {
-            logger.error("Failed to initialize config file!");
+            RepeaterSound.error("Failed to initialize config file!");
             e.printStackTrace();
         }
     }
@@ -70,16 +104,16 @@ public class ConfigManager implements ServerCloseCallback
         return config.get(key);
     }
 
-    public int setConfig(String key, String value, PlayerEntity player)
+    public int setConfigCommand(String key, String value, PlayerEntity player)
     {
         String prev = config.get(key);
         switch (key) {
-            case "basePitch":
+            case "base_pitch":
             case "volume":
                 try {
                     Float.parseFloat(value);
 
-                    if (key.equals("basePitch")) {
+                    if (key.equals("base_pitch")) {
                         player.sendMessage(Text.of("Changed basePitch: " + prev + " -> " + value +
                         " (default: 0.5)"), false);
                         config.put(key, value);
@@ -100,11 +134,11 @@ public class ConfigManager implements ServerCloseCallback
                 }
                 break;
 
-            case "interactionMode":
+            case "interaction_mode":
                 try {
-                    value = InteractionMode.valueOf(value.toUpperCase()).toString();
+                    String value1 = InteractionMode.valueOf(value.toUpperCase()).toString();
                     player.sendMessage(Text.of("Interaction mode is set to " + value), false);
-                    config.put(key, value);
+                    config.put(key, value1);
                     changed = true;
 
                     return 1;
@@ -114,7 +148,7 @@ public class ConfigManager implements ServerCloseCallback
                 }
                 break;
             
-            case "useRandom":
+            case "use_random":
                 if (value.equals("true")) {
                     player.sendMessage(Text.of("Random pitch offset ON"), false);
                     config.put(key, value);
@@ -134,14 +168,14 @@ public class ConfigManager implements ServerCloseCallback
                 player.sendMessage(Text.of("Invalid value!"), false);
                 break;
             
-            case "alarmMessage":
+            case "alarm_message":
             player.sendMessage(Text.of("Alarm message is set to: " + value), false);
                 config.put(key, value);
                 changed = true;
 
                 return 1;
 
-            case "disabledMessage":
+            case "disabled_message":
                 player.sendMessage(Text.of("Disabled message is set to: " + value), false);
                 config.put(key, value);
                 changed = true;
@@ -152,24 +186,82 @@ public class ConfigManager implements ServerCloseCallback
         return 0;
     }
 
-    public Map<String, String> fixConfig(Map<String, String> cfgToCheck)
-    {
-        Map<String, String> checker = new HashMap<>();
-        checker.put("basePitch", "0.5");
-        checker.put("volume", "0.3");
-        checker.put("useRandom", "false");
-        checker.put("interactionMode", "NORMAL");
-        checker.put("alarmMessage", "Clicked {Block} At: {Pos}");
-        checker.put("disabledMessage", "Interaction cancelled by RSMod");
+    public void setConfigScreen(String key, String value) {
+        switch (key) {
+            case "base_pitch":
+            case "volume":
+                try {
+                    Float.parseFloat(value);
 
-        for (Map.Entry<String, String> entry : checker.entrySet())
+                    if (key.equals("basePitch")) {
+                        config.put(key, value);
+                        changed = true;
+
+                        break;
+                    }
+
+                    config.put(key, value);
+                    changed = true;
+                } catch (NumberFormatException e) {
+                }
+                break;
+
+            case "interaction_mode":
+                try {
+                    String value1 = InteractionMode.valueOf(value.toUpperCase()).toString();
+                    config.put(key, value1);
+                    changed = true;
+                } catch (IllegalArgumentException e) {
+                }
+                break;
+
+            case "use_random":
+                if (value.equals("true")) {
+                    config.put(key, value);
+                    changed = true;
+
+                    break;
+                }
+
+                if (value.equals("false")) {
+                    config.put(key, value);
+                    changed = true;
+
+                    break;
+                }
+                break;
+
+            case "alarm_message":
+            case "disabled_message":
+                config.put(key, value);
+                changed = true;
+                break;
+        }
+    }
+
+    public Map<String, String> fixConfig(Map<String, String> cfgToCheck) throws IOException {
+        Map<String, String> checker = new LinkedHashMap<>();
+
+        for (ConfigOption option : ConfigOption.values()) {
+            checker.put(option.id, option.defaultValue);
+        }
+
+        boolean bl = false;
+
+        for (Map.Entry<String, String> checkerEntry : checker.entrySet())
         {
-            if (!cfgToCheck.containsKey(entry.getKey()))
+            if (!cfgToCheck.containsKey(checkerEntry.getKey()))
             {
-                cfgToCheck.put(entry.getKey(), entry.getValue());
-                logger.warn("Missing config option: " +
-                entry.getKey() + ", added with default value: " + entry.getValue());
+                cfgToCheck.put(checkerEntry.getKey(), checkerEntry.getValue());
+                RepeaterSound.warn("Missing config option: " +
+                checkerEntry.getKey() + ", added with default value: " + checkerEntry.getValue());
+
+                bl = true;
             }
+        }
+
+        if (bl) {
+            Files.write(CONFIG_PATH, GSON.toJson(cfgToCheck).getBytes());
         }
 
         return cfgToCheck;
@@ -177,7 +269,7 @@ public class ConfigManager implements ServerCloseCallback
 
     public String getAlarmMessage(BlockState state, BlockPos pos)
     {
-        return getConfig("alarmMessage")
+        return getConfig(ConfigOption.ALARM_MESSAGE.id)
                 .replace("{Block}", state.getBlock().toString())
                 .replace("{Pos}", pos.toShortString());
     }
@@ -189,12 +281,19 @@ public class ConfigManager implements ServerCloseCallback
         {
             try
             {
-                logger.info("Writing config to file");
-                Files.write(path, GSON.toJson(config).getBytes());
+                RepeaterSound.info("Writing config to file");
+                Map<String, String> cfgToSave = new LinkedHashMap<>();
+
+                for (ConfigOption option : ConfigOption.values()) {
+                    Optional<String> value = Optional.ofNullable(config.get(option.id));
+                    cfgToSave.put(option.id, value.orElse(option.defaultValue));
+                }
+
+                Files.write(CONFIG_PATH, GSON.toJson(cfgToSave).getBytes());
             }
             catch (IOException e)
             {
-                logger.error("Failed to write config to file!");
+                RepeaterSound.error("Failed to write config to file!");
                 e.printStackTrace();
             }
         }
