@@ -2,5 +2,13 @@
   "subtitles.repeatersound.repeater_click": "中继器:调节档位",
   "subtitles.repeatersound.redstone_wire_click": "红石线:改变形状",
   "subtitles.repeatersound.daylight_detector_click": "阳光探测器:转换模式",
-  "subtitles.repeatersound.click_alarm": "RSMod:警报点击"
+  "subtitles.repeatersound.click_alarm": "RSMod:警报点击",
+  "repeatersound.config.title": "Repeatersound 配置菜单",
+  "repeatersound.config.main": "Main",
+  "repeatersound.config.option.base_pitch": "基础音调",
+  "repeatersound.config.option.volume": "音量",
+  "repeatersound.config.option.use_random": "使用随机音调",
+  "repeatersound.config.option.interaction_mode": "交互模式",
+  "repeatersound.config.option.alarm_message": "警报模式提示信息",
+  "repeatersound.config.option.disabled_message": "禁用模式提示信息"
 }
