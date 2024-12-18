@@ -73,7 +73,7 @@ public class RepeaterSound implements ClientModInitializer
                                                 }
                                         )
                                         .executes(ctx -> cfg.setConfigCommand(
-                                                "interactionMode",
+                                                ConfigOption.INTERACTION_MODE.id,
                                                 StringArgumentType.getString(ctx, ConfigOption.INTERACTION_MODE.id),
                                                 ctx.getSource().getPlayer()
                                         ))))
