@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ConfigManager implements ServerCloseCallback
 {
-    private Path path = FabricLoader.getInstance().getConfigDir().resolve(
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve(
         "repeatersound.json"
     );
     private Map<String, String> config = new LinkedHashMap<>();
@@ -27,10 +27,10 @@ public class ConfigManager implements ServerCloseCallback
 
     private boolean changed = false;
 
-    private static ConfigManager instance = new ConfigManager();
+    private static final ConfigManager INSTANCE = new ConfigManager();
     public static ConfigManager getInstance()
     {
-        return instance;
+        return INSTANCE;
     }
 
     public ConfigManager()
@@ -38,11 +38,11 @@ public class ConfigManager implements ServerCloseCallback
         // initialize config
         try
         {
-            if (Files.exists(path))
+            if (Files.exists(CONFIG_PATH))
             {
                 // read existing config file
                 RepeaterSound.info("Found config file");
-                String content = new String(Files.readAllBytes(path));
+                String content = new String(Files.readAllBytes(CONFIG_PATH));
                 config = fixConfig(GSON.fromJson(content, Map.class));
             }
             else
@@ -50,9 +50,40 @@ public class ConfigManager implements ServerCloseCallback
                 // create or update config file
                 RepeaterSound.info("Missing correct config file, trying to create or update");
                 config = ConfigUpdater.update();
-                Files.write(path, GSON.toJson(fixConfig(config)).getBytes());
-                RepeaterSound.info("Config file initialized");
+                Files.write(CONFIG_PATH, GSON.toJson(fixConfig(config)).getBytes());
             }
+            RepeaterSound.info("Validating config options...");
+
+            for (Map.Entry<String, String> entry : config.entrySet()) {
+                switch (entry.getKey()) {
+                    case "base_pitch":
+                        try {
+                            Float.parseFloat(entry.getValue());
+                        } catch (NullPointerException | NumberFormatException e) {
+                            entry.setValue(ConfigOption.BASE_PITCH.defaultValue);
+                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.BASE_PITCH.defaultValue);
+                        }
+                        break;
+                    case "volume":
+                        try {
+                            Float.parseFloat(entry.getValue());
+                        } catch (NullPointerException | NumberFormatException e) {
+                            entry.setValue(ConfigOption.BASE_PITCH.defaultValue);
+                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.VOLUME.defaultValue);
+                        }
+                        break;
+                    case "interaction_mode":
+                        try {
+                            InteractionMode.valueOf(entry.getValue());
+                        } catch (NullPointerException | IllegalArgumentException e) {
+                            entry.setValue(ConfigOption.BASE_PITCH.defaultValue);
+                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.INTERACTION_MODE.defaultValue);
+
+                        }
+                }
+            }
+
+            RepeaterSound.info("Config file initialized");
         }
         catch (IOException e)
         {
@@ -66,11 +97,11 @@ public class ConfigManager implements ServerCloseCallback
         return config.get(key);
     }
 
-    public int setConfig(String key, String value, PlayerEntity player)
+    public int setConfigCommand(String key, String value, PlayerEntity player)
     {
         String prev = config.get(key);
         switch (key) {
-            case "basePitch":
+            case "base_pitch":
             case "volume":
                 try {
                     Float.parseFloat(value);
@@ -96,11 +127,11 @@ public class ConfigManager implements ServerCloseCallback
                 }
                 break;
 
-            case "interactionMode":
+            case "interaction_mode":
                 try {
-                    value = InteractionMode.valueOf(value.toUpperCase()).toString();
+                    String value1 = InteractionMode.valueOf(value.toUpperCase()).toString();
                     player.sendMessage(Text.of("Interaction mode is set to " + value), false);
-                    config.put(key, value);
+                    config.put(key, value1);
                     changed = true;
 
                     return 1;
@@ -110,7 +141,7 @@ public class ConfigManager implements ServerCloseCallback
                 }
                 break;
             
-            case "useRandom":
+            case "use_random":
                 if (value.equals("true")) {
                     player.sendMessage(Text.of("Random pitch offset ON"), false);
                     config.put(key, value);
@@ -130,14 +161,14 @@ public class ConfigManager implements ServerCloseCallback
                 player.sendMessage(Text.of("Invalid value!"), false);
                 break;
             
-            case "alarmMessage":
+            case "alarm_message":
             player.sendMessage(Text.of("Alarm message is set to: " + value), false);
                 config.put(key, value);
                 changed = true;
 
                 return 1;
 
-            case "disabledMessage":
+            case "disabled_message":
                 player.sendMessage(Text.of("Disabled message is set to: " + value), false);
                 config.put(key, value);
                 changed = true;
@@ -148,24 +179,75 @@ public class ConfigManager implements ServerCloseCallback
         return 0;
     }
 
+    public void setConfigScreen(String key, String value) {
+        switch (key) {
+            case "base_pitch":
+            case "volume":
+                try {
+                    Float.parseFloat(value);
+
+                    if (key.equals("basePitch")) {
+                        config.put(key, value);
+                        changed = true;
+
+                        break;
+                    }
+
+                    config.put(key, value);
+                    changed = true;
+                } catch (NumberFormatException e) {
+                }
+                break;
+
+            case "interaction_mode":
+                try {
+                    String value1 = InteractionMode.valueOf(value.toUpperCase()).toString();
+                    config.put(key, value1);
+                    changed = true;
+                } catch (IllegalArgumentException e) {
+                }
+                break;
+
+            case "use_random":
+                if (value.equals("true")) {
+                    config.put(key, value);
+                    changed = true;
+
+                    break;
+                }
+
+                if (value.equals("false")) {
+                    config.put(key, value);
+                    changed = true;
+
+                    break;
+                }
+                break;
+
+            case "alarm_message":
+            case "disabled_message":
+                config.put(key, value);
+                changed = true;
+                break;
+        }
+    }
+
     public Map<String, String> fixConfig(Map<String, String> cfgToCheck)
     {
         Map<String, String> checker = new LinkedHashMap<>();
         checker.put("version", RepeaterSound.MOD_VERSION);
-        checker.put("basePitch", "0.5");
-        checker.put("volume", "0.3");
-        checker.put("useRandom", "false");
-        checker.put("interactionMode", "NORMAL");
-        checker.put("alarmMessage", "Clicked {Block} At: {Pos}");
-        checker.put("disabledMessage", "Interaction cancelled by RSMod");
 
-        for (Map.Entry<String, String> entry : checker.entrySet())
+        for (ConfigOption option : ConfigOption.values()) {
+            checker.put(option.id, option.defaultValue);
+        }
+
+        for (Map.Entry<String, String> checkerEntry : checker.entrySet())
         {
-            if (!cfgToCheck.containsKey(entry.getKey()))
+            if (!cfgToCheck.containsKey(checkerEntry.getKey()))
             {
-                cfgToCheck.put(entry.getKey(), entry.getValue());
+                cfgToCheck.put(checkerEntry.getKey(), checkerEntry.getValue());
                 RepeaterSound.warn("Missing config option: " +
-                entry.getKey() + ", added with default value: " + entry.getValue());
+                checkerEntry.getKey() + ", added with default value: " + checkerEntry.getValue());
             }
         }
 
@@ -174,7 +256,7 @@ public class ConfigManager implements ServerCloseCallback
 
     public String getAlarmMessage(BlockState state, BlockPos pos)
     {
-        return getConfig("alarmMessage")
+        return getConfig(ConfigOption.ALARM_MESSAGE.id)
                 .replace("{Block}", state.getBlock().toString())
                 .replace("{Pos}", pos.toShortString());
     }
@@ -187,7 +269,7 @@ public class ConfigManager implements ServerCloseCallback
             try
             {
                 RepeaterSound.info("Writing config to file");
-                Files.write(path, GSON.toJson(config).getBytes());
+                Files.write(CONFIG_PATH, GSON.toJson(config).getBytes());
             }
             catch (IOException e)
             {

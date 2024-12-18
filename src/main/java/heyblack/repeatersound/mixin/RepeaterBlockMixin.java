@@ -1,5 +1,6 @@
 package heyblack.repeatersound.mixin;
 
+import heyblack.repeatersound.config.ConfigOption;
 import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.RepeaterSound;
 import heyblack.repeatersound.config.ConfigManager;
@@ -34,13 +35,13 @@ public class RepeaterBlockMixin
         if (world.isClient)
         {
             ConfigManager cfg = ConfigManager.getInstance();
-            float basePitch = Float.parseFloat(cfg.getConfig("basePitch"));
-            float pitch = Boolean.parseBoolean(cfg.getConfig("useRandom")) ?
+            float basePitch = Float.parseFloat(cfg.getConfig(ConfigOption.BASE_PITCH.id));
+            float pitch = Boolean.parseBoolean(cfg.getConfig(ConfigOption.USE_RANDOM.id)) ?
                     (float) (basePitch + (Math.random() - 0.5) * 0.25) :
                     (basePitch - 0.02f) + state.cycle(DELAY).get(DELAY) * 0.02f;
-            float volume = Float.parseFloat(cfg.getConfig("volume"));
+            float volume = Float.parseFloat(cfg.getConfig(ConfigOption.VOLUME.id));
 
-            InteractionMode mode = InteractionMode.valueOf(cfg.getConfig("interactionMode"));
+            InteractionMode mode = InteractionMode.valueOf(cfg.getConfig(ConfigOption.INTERACTION_MODE.id));
             switch (mode)
             {
                 case NORMAL:
