@@ -53,6 +53,7 @@ public class ConfigManager implements ServerCloseCallback
                 Files.write(CONFIG_PATH, GSON.toJson(fixConfig(config)).getBytes());
             }
             RepeaterSound.info("Validating config options...");
+            boolean bl = false;
 
             for (Map.Entry<String, String> entry : config.entrySet()) {
                 switch (entry.getKey()) {
@@ -62,25 +63,30 @@ public class ConfigManager implements ServerCloseCallback
                         } catch (NullPointerException | NumberFormatException e) {
                             entry.setValue(ConfigOption.BASE_PITCH.defaultValue);
                             RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.BASE_PITCH.defaultValue);
+                            bl = true;
                         }
                         break;
                     case "volume":
                         try {
                             Float.parseFloat(entry.getValue());
                         } catch (NullPointerException | NumberFormatException e) {
-                            entry.setValue(ConfigOption.BASE_PITCH.defaultValue);
+                            entry.setValue(ConfigOption.VOLUME.defaultValue);
                             RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.VOLUME.defaultValue);
+                            bl = true;
                         }
                         break;
                     case "interaction_mode":
                         try {
                             InteractionMode.valueOf(entry.getValue());
                         } catch (NullPointerException | IllegalArgumentException e) {
-                            entry.setValue(ConfigOption.BASE_PITCH.defaultValue);
+                            entry.setValue(ConfigOption.INTERACTION_MODE.defaultValue);
                             RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.INTERACTION_MODE.defaultValue);
-
+                            bl = true;
                         }
                 }
+            }
+            if (bl) {
+                Files.write(CONFIG_PATH, GSON.toJson(config).getBytes());
             }
 
             RepeaterSound.info("Config file initialized");
