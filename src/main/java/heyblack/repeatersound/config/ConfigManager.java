@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ConfigManager implements ServerCloseCallback
 {
@@ -238,14 +239,14 @@ public class ConfigManager implements ServerCloseCallback
         }
     }
 
-    public Map<String, String> fixConfig(Map<String, String> cfgToCheck)
-    {
+    public Map<String, String> fixConfig(Map<String, String> cfgToCheck) throws IOException {
         Map<String, String> checker = new LinkedHashMap<>();
-        checker.put("version", RepeaterSound.MOD_VERSION);
 
         for (ConfigOption option : ConfigOption.values()) {
             checker.put(option.id, option.defaultValue);
         }
+
+        boolean bl = false;
 
         for (Map.Entry<String, String> checkerEntry : checker.entrySet())
         {
@@ -254,7 +255,13 @@ public class ConfigManager implements ServerCloseCallback
                 cfgToCheck.put(checkerEntry.getKey(), checkerEntry.getValue());
                 RepeaterSound.warn("Missing config option: " +
                 checkerEntry.getKey() + ", added with default value: " + checkerEntry.getValue());
+
+                bl = true;
             }
+        }
+
+        if (bl) {
+            Files.write(CONFIG_PATH, GSON.toJson(cfgToCheck).getBytes());
         }
 
         return cfgToCheck;
@@ -275,7 +282,14 @@ public class ConfigManager implements ServerCloseCallback
             try
             {
                 RepeaterSound.info("Writing config to file");
-                Files.write(CONFIG_PATH, GSON.toJson(config).getBytes());
+                Map<String, String> cfgToSave = new LinkedHashMap<>();
+
+                for (ConfigOption option : ConfigOption.values()) {
+                    Optional<String> value = Optional.ofNullable(config.get(option.id));
+                    cfgToSave.put(option.id, value.orElse(option.defaultValue));
+                }
+
+                Files.write(CONFIG_PATH, GSON.toJson(cfgToSave).getBytes());
             }
             catch (IOException e)
             {

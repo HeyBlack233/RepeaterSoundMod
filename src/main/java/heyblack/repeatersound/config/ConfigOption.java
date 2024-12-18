@@ -1,6 +1,9 @@
 package heyblack.repeatersound.config;
 
+import heyblack.repeatersound.RepeaterSound;
+
 public enum ConfigOption {
+    VERSION("version", RepeaterSound.MOD_VERSION),
     BASE_PITCH("base_pitch", "0.5"),
     VOLUME("volume", "0.3"),
     USE_RANDOM("use_random", "false"),
