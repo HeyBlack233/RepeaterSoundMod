@@ -106,7 +106,7 @@ public class ConfigManager implements ServerCloseCallback
                 try {
                     Float.parseFloat(value);
 
-                    if (key.equals("basePitch")) {
+                    if (key.equals("base_pitch")) {
                         player.sendMessage(Text.of("Changed basePitch: " + prev + " -> " + value +
                         " (default: 0.5)"), false);
                         config.put(key, value);
