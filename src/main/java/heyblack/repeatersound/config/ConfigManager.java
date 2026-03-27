@@ -54,39 +54,8 @@ public class ConfigManager implements ServerCloseCallback
                 Files.write(CONFIG_PATH, GSON.toJson(fixConfig(config)).getBytes());
             }
             RepeaterSound.info("Validating config options...");
-            boolean bl = false;
 
-            for (Map.Entry<String, String> entry : config.entrySet()) {
-                switch (entry.getKey()) {
-                    case "base_pitch":
-                        try {
-                            Float.parseFloat(entry.getValue());
-                        } catch (NullPointerException | NumberFormatException e) {
-                            entry.setValue(ConfigOption.BASE_PITCH.defaultValue);
-                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.BASE_PITCH.defaultValue);
-                            bl = true;
-                        }
-                        break;
-                    case "volume":
-                        try {
-                            Float.parseFloat(entry.getValue());
-                        } catch (NullPointerException | NumberFormatException e) {
-                            entry.setValue(ConfigOption.VOLUME.defaultValue);
-                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.VOLUME.defaultValue);
-                            bl = true;
-                        }
-                        break;
-                    case "interaction_mode":
-                        try {
-                            InteractionMode.valueOf(entry.getValue());
-                        } catch (NullPointerException | IllegalArgumentException e) {
-                            entry.setValue(ConfigOption.INTERACTION_MODE.defaultValue);
-                            RepeaterSound.warn("Invalid value found for config option " + entry.getKey() + ". Replaced with default value: " + ConfigOption.INTERACTION_MODE.defaultValue);
-                            bl = true;
-                        }
-                }
-            }
-            if (bl) {
+            if (validateStoredConfig()) {
                 Files.write(CONFIG_PATH, GSON.toJson(config).getBytes());
             }
 
@@ -104,142 +73,73 @@ public class ConfigManager implements ServerCloseCallback
         return config.get(key);
     }
 
+    /**
+     * Applies a config change requested by client command input.
+     * Input is normalized with the same validator used by startup and config screen updates.
+     */
     public int setConfigCommand(String key, String value, PlayerEntity player)
     {
-        String prev = config.get(key);
-        switch (key) {
-            case "base_pitch":
-            case "volume":
-                try {
-                    Float.parseFloat(value);
-
-                    if (key.equals("base_pitch")) {
-                        player.sendMessage(Text.of("Changed basePitch: " + prev + " -> " + value +
-                        " (default: 0.5)"), false);
-                        config.put(key, value);
-                        changed = true;
-
-                        return 1;
-                    }
-
-                    player.sendMessage(Text.of("Changed volume: " + prev + " -> " + value +
-                    " (default: 0.3)"), false);
-                    config.put(key, value);
-                    changed = true;
-
-                    return 1;
-
-                } catch (NumberFormatException e) {
-                    player.sendMessage(Text.of("Invalid value!"), false);
-                }
-                break;
-
-            case "interaction_mode":
-                try {
-                    String value1 = InteractionMode.valueOf(value.toUpperCase()).toString();
-                    player.sendMessage(Text.of("Interaction mode is set to " + value), false);
-                    config.put(key, value1);
-                    changed = true;
-
-                    return 1;
-
-                } catch (IllegalArgumentException e) {
-                    player.sendMessage(Text.of("Invalid value!"), false);
-                }
-                break;
-            
-            case "use_random":
-                if (value.equals("true")) {
-                    player.sendMessage(Text.of("Random pitch offset ON"), false);
-                    config.put(key, value);
-                    changed = true;
-
-                    return 1;
-                }
-
-                if (value.equals("false")) {
-                    player.sendMessage(Text.of("Random pitch offset OFF"), false);
-                    config.put(key, value);
-                    changed = true;
-
-                    return 1;
-                }
-
-                player.sendMessage(Text.of("Invalid value!"), false);
-                break;
-            
-            case "alarm_message":
-            player.sendMessage(Text.of("Alarm message is set to: " + value), false);
-                config.put(key, value);
-                changed = true;
-
-                return 1;
-
-            case "disabled_message":
-                player.sendMessage(Text.of("Disabled message is set to: " + value), false);
-                config.put(key, value);
-                changed = true;
-
-                return 1;
+        ConfigOption option = ConfigOption.byId(key);
+        if (option == null || option == ConfigOption.VERSION) {
+            return 0;
         }
 
-        return 0;
+        String normalized = normalizeUserInput(option, value);
+        if (normalized == null) {
+            player.sendMessage(Text.of("Invalid value!"), false);
+            return 0;
+        }
+
+        String prev = config.get(option.id);
+        setConfigValue(option.id, normalized);
+
+        switch (option) {
+            case BASE_PITCH:
+                player.sendMessage(Text.of("Changed basePitch: " + prev + " -> " + normalized +
+                        " (default: " + ConfigOption.BASE_PITCH.defaultValue + ")"), false);
+                return 1;
+            case VOLUME:
+                player.sendMessage(Text.of("Changed volume: " + prev + " -> " + normalized +
+                        " (default: " + ConfigOption.VOLUME.defaultValue + ")"), false);
+                return 1;
+            case INTERACTION_MODE:
+                player.sendMessage(Text.of("Interaction mode is set to " + normalized), false);
+                return 1;
+            case USE_RANDOM:
+                player.sendMessage(Text.of(Boolean.parseBoolean(normalized) ? "Random pitch offset ON" : "Random pitch offset OFF"), false);
+                return 1;
+            case ALARM_MESSAGE:
+                player.sendMessage(Text.of("Alarm message is set to: " + normalized), false);
+                return 1;
+            case DISABLED_MESSAGE:
+                player.sendMessage(Text.of("Disabled message is set to: " + normalized), false);
+                return 1;
+            default:
+                return 0;
+        }
     }
 
+    /**
+     * Applies a config change from the config screen.
+     * Invalid values are ignored to preserve the last valid config state.
+     */
     public void setConfigScreen(String key, String value) {
-        switch (key) {
-            case "base_pitch":
-            case "volume":
-                try {
-                    Float.parseFloat(value);
+        ConfigOption option = ConfigOption.byId(key);
+        if (option == null || option == ConfigOption.VERSION) {
+            return;
+        }
 
-                    if (key.equals("basePitch")) {
-                        config.put(key, value);
-                        changed = true;
-
-                        break;
-                    }
-
-                    config.put(key, value);
-                    changed = true;
-                } catch (NumberFormatException e) {
-                }
-                break;
-
-            case "interaction_mode":
-                try {
-                    String value1 = InteractionMode.valueOf(value.toUpperCase()).toString();
-                    config.put(key, value1);
-                    changed = true;
-                } catch (IllegalArgumentException e) {
-                }
-                break;
-
-            case "use_random":
-                if (value.equals("true")) {
-                    config.put(key, value);
-                    changed = true;
-
-                    break;
-                }
-
-                if (value.equals("false")) {
-                    config.put(key, value);
-                    changed = true;
-
-                    break;
-                }
-                break;
-
-            case "alarm_message":
-            case "disabled_message":
-                config.put(key, value);
-                changed = true;
-                break;
+        String normalized = normalizeUserInput(option, value);
+        if (normalized != null) {
+            setConfigValue(option.id, normalized);
         }
     }
 
     public Map<String, String> fixConfig(Map<String, String> cfgToCheck) throws IOException {
+        if (cfgToCheck == null) {
+            cfgToCheck = new LinkedHashMap<>();
+        }
+
         Map<String, String> checker = new LinkedHashMap<>();
 
         for (ConfigOption option : ConfigOption.values()) {
@@ -265,6 +165,89 @@ public class ConfigManager implements ServerCloseCallback
         }
 
         return cfgToCheck;
+    }
+
+    /**
+     * Writes the value only when it actually changes, so save-on-close can be skipped for no-op updates.
+     */
+    private void setConfigValue(String key, String value) {
+        String prev = config.get(key);
+        if (prev == null || !prev.equals(value)) {
+            config.put(key, value);
+            changed = true;
+        }
+    }
+
+    /**
+     * Validates every persisted option and replaces invalid entries with defaults.
+     *
+     * @return true when at least one entry was repaired
+     */
+    private boolean validateStoredConfig() {
+        boolean updated = false;
+
+        for (ConfigOption option : ConfigOption.values()) {
+            String current = config.get(option.id);
+            String normalized = normalizeStoredValue(option, current);
+            if (current == null || !current.equals(normalized)) {
+                config.put(option.id, normalized);
+                updated = true;
+            }
+        }
+
+        return updated;
+    }
+
+    /**
+     * Normalizes a persisted value and falls back to default with a warning when invalid.
+     */
+    private String normalizeStoredValue(ConfigOption option, String rawValue) {
+        String normalized = normalizeUserInput(option, rawValue);
+        if (normalized != null) {
+            return normalized;
+        }
+
+        RepeaterSound.warn("Invalid value found for config option " + option.id +
+                ". Replaced with default value: " + option.defaultValue);
+        return option.defaultValue;
+    }
+
+    /**
+     * Normalizes raw user input according to the option type.
+     *
+     * <p>Returns null when the value is invalid for this option.</p>
+     */
+    private String normalizeUserInput(ConfigOption option, String rawValue) {
+        if (rawValue == null) {
+            return null;
+        }
+
+        switch (option) {
+            case BASE_PITCH:
+            case VOLUME:
+                try {
+                    return String.valueOf(Float.parseFloat(rawValue));
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            case INTERACTION_MODE:
+                try {
+                    return InteractionMode.valueOf(rawValue.toUpperCase()).toString();
+                } catch (IllegalArgumentException e) {
+                    return null;
+                }
+            case USE_RANDOM:
+                if ("true".equals(rawValue) || "false".equals(rawValue)) {
+                    return rawValue;
+                }
+                return null;
+            case ALARM_MESSAGE:
+            case DISABLED_MESSAGE:
+                return rawValue;
+            case VERSION:
+            default:
+                return null;
+        }
     }
 
     public String getAlarmMessage(BlockState state, BlockPos pos)
