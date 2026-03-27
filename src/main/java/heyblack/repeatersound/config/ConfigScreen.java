@@ -61,7 +61,7 @@ public class ConfigScreen {
         .build());
 
         general.addEntry(entryBuilder.startStrField(
-                        new TranslatableText("repeatersound.config.option.alarm_message"),
+                        new TranslatableText("repeatersound.config.option.disabled_message"),
                         CONFIG_MANAGER.getConfig(ConfigOption.DISABLED_MESSAGE.id)
                 )
                 .setDefaultValue(ConfigOption.DISABLED_MESSAGE.defaultValue)
