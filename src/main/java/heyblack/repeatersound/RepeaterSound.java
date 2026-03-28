@@ -8,11 +8,13 @@ import heyblack.repeatersound.config.ConfigOption;
 import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +35,7 @@ public class RepeaterSound implements ClientModInitializer
     {
         ConfigManager cfg = ConfigManager.getInstance();
 
-        ClientCommandManager.DISPATCHER.register(
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register(
                 ClientCommandManager.literal("repeatersound")
                         .then(ClientCommandManager.literal("setBasePitch")
                                 .then(ClientCommandManager.argument(ConfigOption.BASE_PITCH.id, FloatArgumentType.floatArg())
@@ -93,13 +95,13 @@ public class RepeaterSound implements ClientModInitializer
                                                 String.valueOf(StringArgumentType.getString(ctx, ConfigOption.DISABLED_MESSAGE.id)),
                                                 ctx.getSource().getPlayer()
                                         ))))
-        );
+        ));
 
         ServerCloseCallback.EVENT.register(cfg);
     }
 
     private static SoundEvent register(String id) {
-        return (SoundEvent)Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(new Identifier(id)));
+        return (SoundEvent) Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(new Identifier(id)));
     }
 
     public static void info(String s) {

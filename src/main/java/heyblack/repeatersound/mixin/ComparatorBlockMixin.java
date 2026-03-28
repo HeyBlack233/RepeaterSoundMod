@@ -45,7 +45,7 @@ public class ComparatorBlockMixin
             InteractionMode mode = InteractionMode.valueOf(cfg.getConfig(ConfigOption.INTERACTION_MODE.id));
             if (mode == InteractionMode.ALARM)
             {
-                player.sendMessage(Text.of(cfg.getAlarmMessage(state, blockPos)), false);
+                player.sendMessage(Text.literal(cfg.getAlarmMessage(state, blockPos)), false);
                 args.set(2, RepeaterSound.CLICK_ALARM);
             }
         }

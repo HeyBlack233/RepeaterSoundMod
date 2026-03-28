@@ -8,6 +8,7 @@ import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
@@ -86,7 +87,7 @@ public class ConfigManager implements ServerCloseCallback
 
         String normalized = normalizeUserInput(option, value);
         if (normalized == null) {
-            player.sendMessage(Text.of("Invalid value!"), false);
+            player.sendMessage(Text.literal("Invalid value!"), false);
             return 0;
         }
 
@@ -95,24 +96,24 @@ public class ConfigManager implements ServerCloseCallback
 
         switch (option) {
             case BASE_PITCH:
-                player.sendMessage(Text.of("Changed basePitch: " + prev + " -> " + normalized +
+                player.sendMessage(Text.literal("Changed basePitch: " + prev + " -> " + normalized +
                         " (default: " + ConfigOption.BASE_PITCH.defaultValue + ")"), false);
                 return 1;
             case VOLUME:
-                player.sendMessage(Text.of("Changed volume: " + prev + " -> " + normalized +
+                player.sendMessage(Text.literal("Changed volume: " + prev + " -> " + normalized +
                         " (default: " + ConfigOption.VOLUME.defaultValue + ")"), false);
                 return 1;
             case INTERACTION_MODE:
-                player.sendMessage(Text.of("Interaction mode is set to " + normalized), false);
+                player.sendMessage(Text.literal("Interaction mode is set to " + normalized), false);
                 return 1;
             case USE_RANDOM:
-                player.sendMessage(Text.of(Boolean.parseBoolean(normalized) ? "Random pitch offset ON" : "Random pitch offset OFF"), false);
+                player.sendMessage(Text.literal(Boolean.parseBoolean(normalized) ? "Random pitch offset ON" : "Random pitch offset OFF"), false);
                 return 1;
             case ALARM_MESSAGE:
-                player.sendMessage(Text.of("Alarm message is set to: " + normalized), false);
+                player.sendMessage(Text.literal("Alarm message is set to: " + normalized), false);
                 return 1;
             case DISABLED_MESSAGE:
-                player.sendMessage(Text.of("Disabled message is set to: " + normalized), false);
+                player.sendMessage(Text.literal("Disabled message is set to: " + normalized), false);
                 return 1;
             default:
                 return 0;
