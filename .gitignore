@@ -31,4 +31,6 @@ bin/
 # fabric
 
 run/
+
 docs/
+/.qwen/
