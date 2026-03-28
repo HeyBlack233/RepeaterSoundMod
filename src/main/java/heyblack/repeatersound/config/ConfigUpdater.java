@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
@@ -85,9 +84,9 @@ public class ConfigUpdater
         }
 
         Path path = findConfigFile();
-        if (path != null) // version from 1.3.0 to 1.5.0
+        if (path != null) // version 1.3.0+
         {
-            RepeaterSound.info("Updating config file from version 1.3.0 - 1.5.0");
+            RepeaterSound.info("Updating config file from version 1.3.0 or above");
             try
             {
                 reader = new JsonReader(new FileReader(path.toFile()));
@@ -118,16 +117,9 @@ public class ConfigUpdater
                     }
                 }
 
-                Map<String, String> newCfg = new LinkedHashMap<>();
-
-                for (ConfigOption option : ConfigOption.values()) {
-                    Optional<String> value = Optional.ofNullable(intermediate.get(option.id));
-                    newCfg.put(option.id, value.orElse(option.defaultValue));
-                }
-
                 reader.close();
                 Files.delete(path);
-                return newCfg;
+                return intermediate;
             }
             catch (IOException e)
             {
@@ -135,9 +127,6 @@ public class ConfigUpdater
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        } else // version >= 1.6.0
-        {
-            // not yet
         }
 
         return cfg;
