@@ -11,6 +11,8 @@ import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.enums.ComparatorMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +27,7 @@ import static net.minecraft.block.ComparatorBlock.MODE;
 public class ComparatorBlockMixin
 {
     @ModifyArgs(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"))
-    public void pitch(BlockState state, World world, BlockPos blockPos, PlayerEntity player, Args args)
+    public void pitch(Args args, BlockState state, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult hit)
     {
         if (world.isClient)
         {
