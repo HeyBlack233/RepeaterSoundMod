@@ -11,7 +11,6 @@ import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.enums.ComparatorMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,7 +25,7 @@ import static net.minecraft.block.ComparatorBlock.MODE;
 @Mixin(ComparatorBlock.class)
 public class ComparatorBlockMixin {
     @ModifyArgs(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"))
-    public void pitch(Args args, BlockState state, World world, BlockPos blockPos, PlayerEntity player, Hand hand,
+    public void pitch(Args args, BlockState state, World world, BlockPos blockPos, PlayerEntity player,
             BlockHitResult hit) {
         if (world.isClient()) {
             ConfigManager cfg = ConfigManager.getInstance();
