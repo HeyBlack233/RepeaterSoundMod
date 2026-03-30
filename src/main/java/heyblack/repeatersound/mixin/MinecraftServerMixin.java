@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin
 {
-    @Inject(method = "shutdown", at = @At(value = "HEAD"))
+    @Inject(method = "stopServer", at = @At(value = "HEAD"))
     private void serverCloseCallback(CallbackInfo ci)
     {
         ServerCloseCallback.EVENT.invoker().saveConfig();

@@ -6,11 +6,10 @@ import heyblack.repeatersound.RepeaterSound;
 import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -78,7 +77,7 @@ public class ConfigManager implements ServerCloseCallback
      * Applies a config change requested by client command input.
      * Input is normalized with the same validator used by startup and config screen updates.
      */
-    public int setConfigCommand(String key, String value, PlayerEntity player)
+    public int setConfigCommand(String key, String value, Player player)
     {
         ConfigOption option = ConfigOption.byId(key);
         if (option == null || option == ConfigOption.VERSION) {
@@ -87,7 +86,7 @@ public class ConfigManager implements ServerCloseCallback
 
         String normalized = normalizeUserInput(option, value);
         if (normalized == null) {
-            player.sendMessage(Text.literal("Invalid value!"), false);
+            player.sendSystemMessage(Component.literal("Invalid value!"));
             return 0;
         }
 
@@ -96,24 +95,24 @@ public class ConfigManager implements ServerCloseCallback
 
         switch (option) {
             case BASE_PITCH:
-                player.sendMessage(Text.literal("Changed basePitch: " + prev + " -> " + normalized +
-                        " (default: " + ConfigOption.BASE_PITCH.defaultValue + ")"), false);
+                player.sendSystemMessage(Component.literal("Changed basePitch: " + prev + " -> " + normalized +
+                        " (default: " + ConfigOption.BASE_PITCH.defaultValue + ")"));
                 return 1;
             case VOLUME:
-                player.sendMessage(Text.literal("Changed volume: " + prev + " -> " + normalized +
-                        " (default: " + ConfigOption.VOLUME.defaultValue + ")"), false);
+                player.sendSystemMessage(Component.literal("Changed volume: " + prev + " -> " + normalized +
+                        " (default: " + ConfigOption.VOLUME.defaultValue + ")"));
                 return 1;
             case INTERACTION_MODE:
-                player.sendMessage(Text.literal("Interaction mode is set to " + normalized), false);
+                player.sendSystemMessage(Component.literal("Interaction mode is set to " + normalized));
                 return 1;
             case USE_RANDOM:
-                player.sendMessage(Text.literal(Boolean.parseBoolean(normalized) ? "Random pitch offset ON" : "Random pitch offset OFF"), false);
+                player.sendSystemMessage(Component.literal(Boolean.parseBoolean(normalized) ? "Random pitch offset ON" : "Random pitch offset OFF"));
                 return 1;
             case ALARM_MESSAGE:
-                player.sendMessage(Text.literal("Alarm message is set to: " + normalized), false);
+                player.sendSystemMessage(Component.literal("Alarm message is set to: " + normalized));
                 return 1;
             case DISABLED_MESSAGE:
-                player.sendMessage(Text.literal("Disabled message is set to: " + normalized), false);
+                player.sendSystemMessage(Component.literal("Disabled message is set to: " + normalized));
                 return 1;
             default:
                 return 0;

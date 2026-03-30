@@ -4,8 +4,8 @@ import heyblack.repeatersound.util.InteractionMode;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class ConfigScreen {
     private static final ConfigManager CONFIG_MANAGER = ConfigManager.getInstance();
@@ -13,14 +13,14 @@ public class ConfigScreen {
     public static Screen create(Screen parent) {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Text.translatable("repeatersound.config.title"));
+                .setTitle(Component.translatable("repeatersound.config.title"));
 
-        ConfigCategory general = builder.getOrCreateCategory(Text.translatable("repeatersound.config.main"));
+        ConfigCategory general = builder.getOrCreateCategory(Component.translatable("repeatersound.config.main"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
         general.addEntry(entryBuilder.startFloatField(
-                Text.translatable("repeatersound.config.option.base_pitch"),
+                Component.translatable("repeatersound.config.option.base_pitch"),
                 Float.parseFloat(CONFIG_MANAGER.getConfig(ConfigOption.BASE_PITCH.id))
         )
         .setDefaultValue(Float.valueOf(ConfigOption.BASE_PITCH.defaultValue))
@@ -28,7 +28,7 @@ public class ConfigScreen {
         .build());
 
         general.addEntry(entryBuilder.startFloatField(
-                Text.translatable("repeatersound.config.option.volume"),
+                Component.translatable("repeatersound.config.option.volume"),
                 Float.parseFloat(CONFIG_MANAGER.getConfig(ConfigOption.VOLUME.id))
         )
         .setDefaultValue(Float.valueOf(ConfigOption.VOLUME.defaultValue))
@@ -36,7 +36,7 @@ public class ConfigScreen {
         .build());
 
         general.addEntry(entryBuilder.startBooleanToggle(
-                Text.translatable("repeatersound.config.option.use_random"),
+                Component.translatable("repeatersound.config.option.use_random"),
                 Boolean.parseBoolean(CONFIG_MANAGER.getConfig(ConfigOption.USE_RANDOM.id))
         )
         .setDefaultValue(Boolean.parseBoolean(ConfigOption.USE_RANDOM.defaultValue))
@@ -44,7 +44,7 @@ public class ConfigScreen {
         .build());
 
         general.addEntry(entryBuilder.startEnumSelector(
-                Text.translatable("repeatersound.config.option.interaction_mode"),
+                Component.translatable("repeatersound.config.option.interaction_mode"),
                 InteractionMode.class,
                 InteractionMode.valueOf(CONFIG_MANAGER.getConfig(ConfigOption.INTERACTION_MODE.id))
         )
@@ -53,7 +53,7 @@ public class ConfigScreen {
         .build());
 
         general.addEntry(entryBuilder.startStrField(
-                Text.translatable("repeatersound.config.option.alarm_message"),
+                Component.translatable("repeatersound.config.option.alarm_message"),
                 CONFIG_MANAGER.getConfig(ConfigOption.ALARM_MESSAGE.id)
         )
         .setDefaultValue(ConfigOption.ALARM_MESSAGE.defaultValue)
@@ -61,7 +61,7 @@ public class ConfigScreen {
         .build());
 
         general.addEntry(entryBuilder.startStrField(
-                        Text.translatable("repeatersound.config.option.disabled_message"),
+                        Component.translatable("repeatersound.config.option.disabled_message"),
                         CONFIG_MANAGER.getConfig(ConfigOption.DISABLED_MESSAGE.id)
                 )
                 .setDefaultValue(ConfigOption.DISABLED_MESSAGE.defaultValue)

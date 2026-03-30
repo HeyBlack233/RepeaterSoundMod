@@ -8,13 +8,11 @@ import heyblack.repeatersound.config.ConfigOption;
 import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,10 +33,10 @@ public class RepeaterSound implements ClientModInitializer {
         public void onInitializeClient() {
                 ConfigManager cfg = ConfigManager.getInstance();
 
-                ClientCommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register(
-                                ClientCommandManager.literal("repeatersound")
-                                                .then(ClientCommandManager.literal("setBasePitch")
-                                                                .then(ClientCommandManager.argument(
+                ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> dispatcher.register(
+                                ClientCommands.literal("repeatersound")
+                                                .then(ClientCommands.literal("setBasePitch")
+                                                                .then(ClientCommands.argument(
                                                                                 ConfigOption.BASE_PITCH.id,
                                                                                 FloatArgumentType.floatArg())
                                                                                 .executes(ctx -> cfg.setConfigCommand(
@@ -47,8 +45,8 @@ public class RepeaterSound implements ClientModInitializer {
                                                                                                                 .getFloat(ctx, ConfigOption.BASE_PITCH.id)),
                                                                                                 ctx.getSource().getPlayer()))))
 
-                                                .then(ClientCommandManager.literal("useRandomPitch")
-                                                                .then(ClientCommandManager
+                                                .then(ClientCommands.literal("useRandomPitch")
+                                                                .then(ClientCommands
                                                                                 .argument(ConfigOption.USE_RANDOM.id,
                                                                                                 BoolArgumentType.bool())
                                                                                 .executes(ctx -> cfg.setConfigCommand(
@@ -57,8 +55,8 @@ public class RepeaterSound implements ClientModInitializer {
                                                                                                                 .getBool(ctx, ConfigOption.USE_RANDOM.id)),
                                                                                                 ctx.getSource().getPlayer()))))
 
-                                                .then(ClientCommandManager.literal("setVolume")
-                                                                .then(ClientCommandManager.argument(
+                                                .then(ClientCommands.literal("setVolume")
+                                                                .then(ClientCommands.argument(
                                                                                 ConfigOption.VOLUME.id,
                                                                                 FloatArgumentType.floatArg())
                                                                                 .executes(ctx -> cfg.setConfigCommand(
@@ -67,8 +65,8 @@ public class RepeaterSound implements ClientModInitializer {
                                                                                                                 .getFloat(ctx, ConfigOption.VOLUME.id)),
                                                                                                 ctx.getSource().getPlayer()))))
 
-                                                .then(ClientCommandManager.literal("interactionMode")
-                                                                .then(ClientCommandManager.argument(
+                                                .then(ClientCommands.literal("interactionMode")
+                                                                .then(ClientCommands.argument(
                                                                                 ConfigOption.INTERACTION_MODE.id,
                                                                                 StringArgumentType.string())
                                                                                 .suggests(
@@ -86,8 +84,8 @@ public class RepeaterSound implements ClientModInitializer {
                                                                                                                 .getString(ctx, ConfigOption.INTERACTION_MODE.id),
                                                                                                 ctx.getSource().getPlayer()))))
 
-                                                .then(ClientCommandManager.literal("alarmMessage")
-                                                                .then(ClientCommandManager.argument(
+                                                .then(ClientCommands.literal("alarmMessage")
+                                                                .then(ClientCommands.argument(
                                                                                 ConfigOption.ALARM_MESSAGE.id,
                                                                                 StringArgumentType.string())
                                                                                 .executes(ctx -> cfg.setConfigCommand(
@@ -96,8 +94,8 @@ public class RepeaterSound implements ClientModInitializer {
                                                                                                                 .getString(ctx, ConfigOption.ALARM_MESSAGE.id)),
                                                                                                 ctx.getSource().getPlayer()))))
 
-                                                .then(ClientCommandManager.literal("disabledMessage")
-                                                                .then(ClientCommandManager.argument(
+                                                .then(ClientCommands.literal("disabledMessage")
+                                                                .then(ClientCommands.argument(
                                                                                 ConfigOption.DISABLED_MESSAGE.id,
                                                                                 StringArgumentType.string())
                                                                                 .executes(ctx -> cfg.setConfigCommand(
@@ -110,8 +108,8 @@ public class RepeaterSound implements ClientModInitializer {
         }
 
         private static SoundEvent register(String id) {
-                Identifier identifier = Identifier.of(id);
-                return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.of(identifier));
+                Identifier identifier = Identifier.parse(id);
+                return SoundEvent.createVariableRangeEvent(identifier);
         }
 
         public static void info(String s) {

@@ -6,16 +6,17 @@ import heyblack.repeatersound.config.ConfigOption;
 import heyblack.repeatersound.util.InteractionMode;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DaylightDetectorBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DaylightDetectorBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,26 +31,25 @@ public class DaylightDetectorBlockMixin {
     @Final
     public static BooleanProperty INVERTED;
 
-    @Inject(method = "onUse", at = @At("HEAD"))
-    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
-        if (world.isClient()) {
+    @Inject(method = "useWithoutItem", at = @At("HEAD"))
+    public void playSound(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
+        if (level.isClientSide()) {
             ConfigManager cfg = ConfigManager.getInstance();
             float basePitch = Float.parseFloat(cfg.getConfig(ConfigOption.BASE_PITCH.id));
             float pitch = Boolean.parseBoolean(cfg.getConfig(ConfigOption.USE_RANDOM.id))
                     ? (float) (basePitch + (Math.random() - 0.5) * 0.25)
-                    : state.cycle(INVERTED).get(INVERTED) ? basePitch : basePitch + 0.05f;
+                    : state.cycle(INVERTED).getValue(INVERTED) ? basePitch : basePitch + 0.05f;
             float volume = Float.parseFloat(cfg.getConfig(ConfigOption.VOLUME.id));
 
             InteractionMode mode = InteractionMode.valueOf(cfg.getConfig(ConfigOption.INTERACTION_MODE.id));
             switch (mode) {
                 case NORMAL:
-                    world.playSound(player, pos, RepeaterSound.BLOCK_DAYLIGHT_DETECTOR_CLICK, SoundCategory.BLOCKS,
+                    level.playSound(player, pos, RepeaterSound.BLOCK_DAYLIGHT_DETECTOR_CLICK, SoundSource.BLOCKS,
                             volume, pitch);
                     break;
                 case ALARM:
-                    world.playSound(player, pos, RepeaterSound.CLICK_ALARM, SoundCategory.BLOCKS, volume, pitch);
-                    player.sendMessage(Text.literal(cfg.getAlarmMessage(state, pos)), false);
+                    level.playSound(player, pos, RepeaterSound.CLICK_ALARM, SoundSource.BLOCKS, volume, pitch);
+                    player.sendSystemMessage(Component.literal(cfg.getAlarmMessage(state, pos)));
                     break;
             }
         }
