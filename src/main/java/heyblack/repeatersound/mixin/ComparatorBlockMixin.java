@@ -11,7 +11,6 @@ import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.enums.ComparatorMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,7 +26,7 @@ import static net.minecraft.block.ComparatorBlock.MODE;
 public class ComparatorBlockMixin
 {
     @ModifyArgs(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"))
-    public void pitch(Args args, BlockState state, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult hit)
+    public void pitch(Args args, BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit)
     {
         if (world.isClient)
         {
@@ -45,7 +44,7 @@ public class ComparatorBlockMixin
             InteractionMode mode = InteractionMode.valueOf(cfg.getConfig(ConfigOption.INTERACTION_MODE.id));
             if (mode == InteractionMode.ALARM)
             {
-                player.sendMessage(Text.literal(cfg.getAlarmMessage(state, blockPos)), false);
+                player.sendMessage(Text.literal(cfg.getAlarmMessage(state, pos)), false);
                 args.set(2, RepeaterSound.CLICK_ALARM);
             }
         }

@@ -13,7 +13,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -30,7 +29,7 @@ public class RepeaterBlockMixin
 {
     @Shadow @Final public static IntProperty DELAY;
     @Inject(method = "onUse", at = @At("TAIL"))
-    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
         if (world.isClient)
         {

@@ -13,7 +13,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -31,7 +30,7 @@ public class DaylightDetectorBlockMixin
     @Shadow @Final public static BooleanProperty INVERTED;
 
     @Inject(method = "onUse", at = @At("HEAD"))
-    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
         if (world.isClient)
         {
