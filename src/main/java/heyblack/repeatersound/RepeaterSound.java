@@ -79,10 +79,10 @@ public class RepeaterSound implements ClientModInitializer
                                         ))))
 
                         .then(ClientCommandManager.literal("alarmMessage")
-                                .then(ClientCommandManager.argument(ConfigOption.INTERACTION_MODE.id, StringArgumentType.string())
+                                .then(ClientCommandManager.argument(ConfigOption.ALARM_MESSAGE.id, StringArgumentType.string())
                                         .executes(ctx -> cfg.setConfigCommand(
-                                                ConfigOption.INTERACTION_MODE.id,
-                                                String.valueOf(StringArgumentType.getString(ctx, ConfigOption.INTERACTION_MODE.id)),
+                                                ConfigOption.ALARM_MESSAGE.id,
+                                                String.valueOf(StringArgumentType.getString(ctx, ConfigOption.ALARM_MESSAGE.id)),
                                                 ctx.getSource().getPlayer()
                                         ))))
 

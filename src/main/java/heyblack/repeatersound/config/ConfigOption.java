@@ -18,4 +18,19 @@ public enum ConfigOption {
         this.id = id;
         this.defaultValue = defaultValue;
     }
+
+    /**
+     * Resolves a config option by its persisted key id.
+     *
+     * @param id config key in the json file
+     * @return matching option, or null when unknown
+     */
+    public static ConfigOption byId(String id) {
+        for (ConfigOption option : values()) {
+            if (option.id.equals(id)) {
+                return option;
+            }
+        }
+        return null;
+    }
 }
