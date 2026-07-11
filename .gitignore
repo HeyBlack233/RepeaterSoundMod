@@ -34,3 +34,5 @@ run/
 
 docs/
 /.qwen/
+.gradle_home/
+AGENTS.md

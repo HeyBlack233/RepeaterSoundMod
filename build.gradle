@@ -58,10 +58,8 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
+    // Use JDK 26 for compilation (25 lacks javac), but target Java 25 bytecode
+    toolchain.languageVersion = JavaLanguageVersion.of(26)
 
     base {
         archivesName = project.archives_base_name
