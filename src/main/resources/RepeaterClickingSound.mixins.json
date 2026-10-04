@@ -8,7 +8,7 @@
     "DaylightDetectorBlockMixin",
     "MinecraftServerMixin",
     "MultiPlayerGameModeMixin",
-    "RedStoneWireBlockMixin",
+    "RedstoneWireBlockMixin",
     "RepeaterBlockMixin"
   ],
   "injectors": {
